@@ -25,12 +25,9 @@ menuToggle.classList.remove("open"); // Cambia el ícono del menú
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
+// Ahora (Railway)
+const API_URL = "https://mayorista-sin-limites-backend-production.up.railway.app/productos";
 
-
-
-
-
-const API_URL = "http://localhost:5000/api/productos";
 
 // DOM Elements
 const productosContainer = document.getElementById("productos");
@@ -95,7 +92,8 @@ async function cargarProductos() {
 function renderizarProductos(listaProductos) {
   productosContainer.innerHTML = listaProductos.map((p, index) => `
     <div class="producto" data-id="${p.id}" data-aos="fade-right" >
-      <img src="http://localhost:5000/img/productos/${p.imagen}" alt="${p.nombre}">
+      <img src="https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}
+" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
       <p class="precio">Precio: $${p.precio}</p>
       <p class="stock">Stock: ${p.stock}</p>
@@ -349,7 +347,8 @@ function renderizarCarrito() {
     const div = document.createElement("div");
     div.classList.add("carrito-item");
     div.innerHTML = `
-      <img src="http://localhost:5000/img/productos/${p.imagen}" alt="${p.nombre}">
+      <img src="https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}
+" alt="${p.nombre}">
       <div class="carrito-info">
         <p><strong>${p.nombre}</strong></p>
         <p>Precio: $${p.precio}</p>
@@ -590,11 +589,12 @@ formDatosCliente.addEventListener("submit", async (e) => {
 // ==========================
 async function generarPDF(datosCliente, carrito) {
   try {
-    const res = await fetch("http://localhost:5000/api/compras/pdf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ datosCliente, carrito }) // carrito ahora definido
-    });
+  const res = await fetch("https://mayorista-sin-limites-backend-production.up.railway.app/api/compras/pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ datosCliente, carrito }) // carrito ya definido
+  });
+
     const data = await res.json();
     console.log("PDF guardado en backend:", data.filePath);
     console.log("Link WhatsApp:", data.urlWhatsApp);
