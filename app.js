@@ -235,10 +235,11 @@ formAgregarProducto.addEventListener("submit", async (e) => {
     modalAgregarProducto.classList.add("oculto");
     formAgregarProducto.reset();
     previewImagen.style.display = "none";
-    alert("Producto agregado correctamente!");
+    mostrarAlerta("Producto agregado correctamente!", "success");
   } catch (err) {
     console.error(err);
-    alert("No se pudo agregar el producto. Intenta de nuevo.");
+    mostrarAlerta("No se pudo agregar el producto. Intenta de nuevo.", "error");
+
   }
 });
 
@@ -246,57 +247,75 @@ formAgregarProducto.addEventListener("submit", async (e) => {
 
 
 
-
-// Asignar eventos
+// =======================
+// Asignar eventos a productos
+// =======================
 function asignarEventosProductos(productos) {
   productos.forEach(p => {
     const productoDiv = document.querySelector(`.producto[data-id="${p.id}"]`);
     if (!productoDiv) return;
 
+    // Agregar / sumar / restar
     productoDiv.querySelector(".btn-agregar").addEventListener("click", () => agregarAlCarrito(p.id));
     productoDiv.querySelector(".btn-mas").addEventListener("click", () => agregarAlCarrito(p.id));
     productoDiv.querySelector(".btn-menos").addEventListener("click", () => decrementarCantidad(p.id));
 
+    // Editar stock con modalStock
     productoDiv.querySelector(".btn-editar-stock").addEventListener("click", async () => {
-      const nuevoStock = prompt(`Ingrese nuevo stock para "${p.nombre}":`, p.stock);
-      const stockNumber = parseInt(nuevoStock);
-      if (isNaN(stockNumber) || stockNumber < 0) return;
-      try {
-        const res = await fetch(`${API_URL}/${p.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ stock: stockNumber })
-        });
-        if (!res.ok) throw new Error("Error al actualizar stock");
-        p.stock = stockNumber;
-        const itemCarrito = carrito.find(c => c.id === p.id);
-        if (itemCarrito) itemCarrito.stock = stockNumber;
-        guardarCarrito();
-        alert("Stock actualizado correctamente!");
-      } catch (error) {
-        console.error(error);
-        alert("No se pudo actualizar el stock.");
-      }
+      mostrarModalStock(`Ingrese nuevo stock para "${p.nombre}":`, p.stock, async (nuevoStock) => {
+        if (nuevoStock === null) return; // Cancelado
+        const stockNumber = parseInt(nuevoStock);
+        if (isNaN(stockNumber) || stockNumber < 0) return;
+
+        try {
+          const res = await fetch(`${API_URL}/${p.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ stock: stockNumber })
+          });
+          if (!res.ok) throw new Error("Error al actualizar stock");
+
+          // Actualizar local
+          p.stock = stockNumber;
+          const itemCarrito = carrito.find(c => c.id === p.id);
+          if (itemCarrito) itemCarrito.stock = stockNumber;
+          guardarCarrito();
+
+          mostrarAlerta("Stock actualizado correctamente!", "success");
+          actualizarStockVisual();
+
+        } catch (error) {
+          console.error(error);
+          mostrarAlerta("No se pudo actualizar el stock.", "error");
+        }
+      });
     });
 
+    // Eliminar producto
     productoDiv.querySelector(".btn-eliminar-producto").addEventListener("click", async (e) => {
-  e.preventDefault(); // <-- Evita que se haga submit
-  if (!confirm(`¿Deseas eliminar "${p.nombre}" de la base de datos?`)) return;
-  try {
-    const res = await fetch(`${API_URL}/${p.id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error("Error al eliminar producto");
-    productosDB = productosDB.filter(prod => prod.id !== p.id);
-    carrito = carrito.filter(c => c.id !== p.id);
-    productoDiv.remove();
-    guardarCarrito();
-    alert("Producto eliminado correctamente!");
-  } catch (error) {
-    console.error(error);
-    alert("No se pudo eliminar el producto.");
-  }
-});
+      e.preventDefault();
+      modalConfirmacion(`¿Deseas eliminar "${p.nombre}" de la base de datos?`, async (respuesta) => {
+        if (!respuesta) return;
 
+        try {
+          const res = await fetch(`${API_URL}/${p.id}`, { method: "DELETE" });
+          if (!res.ok) throw new Error("Error al eliminar producto");
+
+          productosDB = productosDB.filter(prod => prod.id !== p.id);
+          carrito = carrito.filter(c => c.id !== p.id);
+          productoDiv.remove();
+          guardarCarrito();
+
+          mostrarAlerta("Producto eliminado correctamente!", "success");
+
+        } catch (error) {
+          console.error(error);
+          mostrarAlerta("No se pudo eliminar el producto.", "error");
+        }
+      });
+    });
   });
+
   actualizarStockVisual();
 }
 
@@ -313,7 +332,7 @@ function agregarAlCarrito(id) {
   const productoExistente = carrito.find(p => p.id === id);
   if (productoExistente) {
     if (productoExistente.cantidad < productoDB.stock) productoExistente.cantidad++;
-    else { alert("No hay más stock disponible!"); return; }
+    else { mostrarAlerta("Ya llegaste al stock maximo!", "error"); return; }
   } else {
     carrito.push({ id: productoDB.id, nombre: productoDB.nombre, precio: productoDB.precio, imagen: productoDB.imagen, cantidad: 1, stock: productoDB.stock });
   }
@@ -426,11 +445,24 @@ function actualizarStockVisual() {
   });
 }
 
-
 // Vaciar carrito
 vaciarCarritoBtn.addEventListener("click", () => {
-  if (carrito.length === 0) { alert("El carrito ya está vacío!"); return; }
-  if (confirm("¿Deseas vaciar todo el carrito?")) { carrito = []; guardarCarrito(); }
+  if (carrito.length === 0) {
+    // ⚠️ Aviso en rojo
+    mostrarAlerta("El carrito ya está vacío!", "error");
+    return;
+  }
+
+  // 🔹 Confirmación moderna
+  modalConfirmacion("¿Deseas vaciar todo el carrito?", (respuesta) => {
+    if (!respuesta) return;
+
+    carrito = [];
+    guardarCarrito();
+
+    // ✅ Aviso en verde
+    mostrarAlerta("Carrito vaciado correctamente!", "success");
+  });
 });
 
 // Filtros
@@ -467,7 +499,7 @@ const btnAutocompletar = document.getElementById("btnAutocompletar");
 // ==========================
 finalizarCompraBtn.addEventListener("click", async () => {
   if (carrito.length === 0) { 
-    alert("El carrito está vacío!"); 
+    mostrarAlerta("¡El carrito está vacío!", "error"); 
     return; 
   }
 
@@ -481,7 +513,7 @@ finalizarCompraBtn.addEventListener("click", async () => {
     });
 
     if (sinStock.length > 0) {
-      alert(`Productos sin stock suficiente: ${sinStock.map(p => p.nombre).join(", ")}`);
+     mostrarAlerta(`Productos sin stock suficiente: ${sinStock.map(p => p.nombre).join(", ")}, "error");`);
       carrito = carrito.filter(item => !sinStock.includes(item));
       guardarCarrito();
       return;
@@ -490,7 +522,7 @@ finalizarCompraBtn.addEventListener("click", async () => {
     modalDatosCliente.classList.remove("oculto");
   } catch (err) {
     console.error(err);
-    alert("Error al verificar stock");
+    mostrarAlerta("Error al verificar stock", "error");
   }
 });
 
@@ -508,7 +540,7 @@ cerrarModalDatos.addEventListener("click", () => {
 btnAutocompletar.addEventListener("click", () => {
   const datosGuardados = JSON.parse(localStorage.getItem("datosCliente"));
   if (!datosGuardados) {
-    alert("No se encontraron datos guardados previamente.");
+   mostrarAlerta("No se encontraron datos guardados previamente.", "error");
     return;
   }
 
@@ -577,10 +609,10 @@ formDatosCliente.addEventListener("submit", async (e) => {
     actualizarStockVisual();
     modalDatosCliente.classList.add("oculto");
     formDatosCliente.reset();
-    alert("Compra realizada con éxito!");
+    mostrarAlerta("Compra realizada con éxito!", "success");
   } catch (err) {
     console.error(err);
-    alert("Error finalizando la compra, intente más tarde.");
+   mostrarAlerta("Error finalizando la compra, intente más tarde.", "error");
   }
 });
 
@@ -617,7 +649,7 @@ const btnValidarCodigo = document.getElementById("btnValidarCodigo");
 const inputCodigoAcceso = document.getElementById("inputCodigoAcceso");
 const btnAgregarProducto = document.getElementById("btnAbrirModal");
 
-const CODIGO_EMPLEADO = "1234";
+const CODIGO_EMPLEADO = "3425";
 
 // Recuperar estado del localStorage
 let accesoEmpleado = localStorage.getItem("accesoEmpleado") === "true";
@@ -663,7 +695,7 @@ btnAbrirCodigo.addEventListener("click", () => {
     localStorage.setItem("accesoEmpleado", "false");
     ocultarBotonesEspeciales();
     btnAbrirCodigo.textContent = "💼 Acceso Empleados";
-    alert("Sesión de empleado cerrada.");
+    mostrarAlerta("Sesión de empleado cerrada.", "success");
   } else {
     abrirModalCodigo();
   }
@@ -676,10 +708,10 @@ btnValidarCodigo.addEventListener("click", () => {
     localStorage.setItem("accesoEmpleado", "true");
     mostrarBotonesEspeciales();
     btnAbrirCodigo.textContent = "Cerrar Sesión";
-    alert("Código correcto. Acceso concedido.");
+    mostrarAlerta("Código correcto. Acceso concedido.", "success");
     cerrarModalCodigo();
   } else {
-    alert("Código incorrecto. Intente nuevamente.");
+    mostrarAlerta("Código incorrecto. Intente nuevamente.", "error");
     inputCodigoAcceso.value = "";
     inputCodigoAcceso.focus();
   }
@@ -725,6 +757,93 @@ function actualizarProductosFiltrados(filtrados) {
   paginador.setData(filtrados);
 }
 
+
+
+function mostrarAlerta(mensaje, tipo = "success") {
+  const container = document.getElementById("alert-container");
+
+  const alerta = document.createElement("div");
+  alerta.classList.add("alert");
+  alerta.classList.add(tipo === "success" ? "alert-success" : "alert-error");
+  alerta.textContent = mensaje;
+
+  container.appendChild(alerta);
+
+  // Quitar después de 3s con animación
+  setTimeout(() => {
+    alerta.style.animation = "fadeOut 0.5s forwards";
+    setTimeout(() => alerta.remove(), 500);
+  }, 3000);
+}
+
+
+function modalConfirmacion(mensaje, callback) {
+  const modal = document.getElementById("modalConfirmacion");
+  const mensajeBox = document.getElementById("confirmacion-mensaje");
+  const btnSi = document.getElementById("confirmacion-si");
+  const btnNo = document.getElementById("confirmacion-no");
+
+  mensajeBox.textContent = mensaje;
+  modal.style.display = "flex";
+
+  btnSi.onclick = () => {
+    modal.style.display = "none";
+    callback(true);
+  };
+
+  btnNo.onclick = () => {
+    modal.style.display = "none";
+    callback(false);
+  };
+}
+
+
+// Referencias
+const modalStock = document.getElementById("modalStock");
+const modalStockMensaje = document.getElementById("modalStockMensaje");
+const modalStockInput = document.getElementById("modalStockInput");
+const modalStockAceptar = document.getElementById("modalStockAceptar");
+const modalStockCancelar = document.getElementById("modalStockCancelar");
+const modalStockClose = document.querySelector(".modalStock-close");
+
+// Función para mostrar modalStock como prompt
+function mostrarModalStock(mensaje, valorInicial = "", callback) {
+  modalStockMensaje.textContent = mensaje;
+  modalStockInput.value = valorInicial;
+  modalStock.style.display = "block";
+  modalStockInput.focus();
+
+  // Aceptar
+  const aceptarHandler = () => {
+    const valor = modalStockInput.value;
+    cerrarModalStock();
+    callback(valor);
+  };
+
+  // Cancelar
+  const cancelarHandler = () => {
+    cerrarModalStock();
+    callback(null);
+  };
+
+  // Cerrar modal
+  const cerrarModalStock = () => {
+    modalStock.style.display = "none";
+    modalStockAceptar.removeEventListener("click", aceptarHandler);
+    modalStockCancelar.removeEventListener("click", cancelarHandler);
+    modalStockClose.removeEventListener("click", cancelarHandler);
+  };
+
+  modalStockAceptar.addEventListener("click", aceptarHandler);
+  modalStockCancelar.addEventListener("click", cancelarHandler);
+  modalStockClose.addEventListener("click", cancelarHandler);
+
+  // Enter para aceptar
+  modalStockInput.onkeydown = (e) => {
+    if (e.key === "Enter") aceptarHandler();
+    if (e.key === "Escape") cancelarHandler();
+  };
+}
 
 
 // Inicializar

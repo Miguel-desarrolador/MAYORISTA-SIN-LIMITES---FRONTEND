@@ -1,0 +1,222 @@
+/* Contenedor de alertas */
+#alert-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Estilo base */
+.alert {
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  color: #fff;
+  min-width: 250px;
+  max-width: 300px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  
+  transform: translateX(100%);
+  animation: slideIn 0.5s forwards;
+}
+
+/* Éxito (verde) */
+.alert-success {
+  background: #28a745;
+  border-left: 6px solid #1e7e34;
+}
+
+/* Error (rojo) */
+.alert-error {
+  background: #dc3545;
+  border-left: 6px solid #a71d2a;
+}
+
+/* Animación entrada */
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animación salida */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+
+
+/* Fondo oscuro */
+.modalConfirmacion {
+  display: none;
+  position: fixed;
+  z-index: 3000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caja */
+.confirmacion-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  animation: popIn 0.3s ease;
+}
+
+/* Animación */
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Botones */
+.confirmacion-botones {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.confirmacion-botones .btn-si {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.confirmacion-botones .btn-si:hover {
+  background: #218838;
+}
+
+.confirmacion-botones .btn-no {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.confirmacion-botones .btn-no:hover {
+  background: #a71d2a;
+}
+
+
+
+/* =====================
+   Modal Stock Personalizado
+===================== */
+.modalStock {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5); /* Fondo oscuro semi-transparente */
+  backdrop-filter: blur(3px); /* Efecto blur */
+  transition: all 0.3s ease;
+}
+
+.modalStock-content {
+  background-color: #fff;
+  margin: 50% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modalStock-content p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.modalStock-content input {
+  width: 80%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.modalStock-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.modalStock-buttons button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+#modalStockAceptar {
+  background-color: #28a745;
+  color: #fff;
+}
+
+#modalStockAceptar:hover {
+  background-color: #218838;
+}
+
+#modalStockCancelar {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+#modalStockCancelar:hover {
+  background-color: #c82333;
+}
+
+.modalStock-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+}
+
+.modalStock-close:hover {
+  color: #333;
+}

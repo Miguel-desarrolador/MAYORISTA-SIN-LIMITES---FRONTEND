@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tienda</title>
+  <link rel="stylesheet" href="alert.css">
   <link rel="stylesheet" href="carrito.css">
   <link rel="stylesheet" href="categoriaBuscador.css">
   <link rel="stylesheet" href="finalizarCompra.css">
@@ -230,9 +231,35 @@
 
 
 
+<!-- Modal de confirmación -->
+<div id="modalConfirmacion" class="modalConfirmacion">
+  <div class="confirmacion-content">
+    <p id="confirmacion-mensaje"></p>
+    <div class="confirmacion-botones">
+      <button id="confirmacion-si" class="btn-si">Aceptar</button>
+      <button id="confirmacion-no" class="btn-no">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 
 
+<!-- Modal Stock -->
+<div id="modalStock" class="modalStock">
+  <div class="modalStock-content">
+    <span class="modalStock-close">&times;</span>
+    <p id="modalStockMensaje">Ingrese nuevo stock:</p>
+    <input type="number" id="modalStockInput" min="0" />
+    <div class="modalStock-buttons">
+      <button id="modalStockAceptar">Aceptar</button>
+      <button id="modalStockCancelar">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+
+  <div id="alert-container"></div>
 
 
   <!-- Icono flotante del carrito -->
