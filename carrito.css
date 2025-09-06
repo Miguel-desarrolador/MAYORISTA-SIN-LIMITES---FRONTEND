@@ -1,4 +1,6 @@
-
+/* ==========================
+   LOGO Y HEADER
+========================== */
 #logo {
     display:block;
     justify-content: space-between;
@@ -25,9 +27,8 @@
   height: auto;
   position: absolute;
   left: 110px;
-    margin-top: -5px;
+  margin-top: -5px;
 }
-
 
 .mayorista {
     margin-left: 15px;
@@ -36,7 +37,6 @@
     font-weight: bold;
     color: rgb(0, 0, 0);
     text-transform: uppercase;
-    
 }
 
 /* ==========================
@@ -64,14 +64,11 @@
 /* ==========================
    ICONO CARRITO FLOTANTE
 ========================== */
-
-/* Estilo del icono flotante */
 .carrito-icono {
     position: fixed;
     bottom: 25px;
     right: 20px;
     background-color: whitesmoke;
-  
     border-radius: 50%;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -97,53 +94,59 @@
     border-radius: 50%;
     padding: 5px 8px;
 }
+
 /* ==========================
-   CARRITO FLOTANTE
+   CARRITO FLOTANTE OCULTO POR DEFECTO
 ========================== */
 #carritoFlotante {
   position: fixed;
-  top: 50%;
+  top: 0;
   right: 0;
-  transform: translateY(-50%) translateX(100%);
-  max-width: 100%;
-  max-height: 100%; /* altura máxima para que no se vea atrás */
-  background: #fff;
-  box-shadow: -6px 6px 20px rgba(0,0,0,0.25);
+  width: 100%;          /* ocupa toda la pantalla */
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
   padding: 2rem;
-  border-radius: 8px 0 0 8px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   z-index: 1000;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+
+  /* OCULTO */
   opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
   overflow-y: hidden;
 }
 
+/* ==========================
+   CARRITO ABIERTO
+========================== */
 #carritoFlotante.abierto {
-  transform: translateY(-50%) translateX(0);
   opacity: 1;
+  pointer-events: auto;
+  overflow-y: auto; /* scroll solo cuando hay productos */
 }
 
 /* ==========================
    BOTÓN CERRAR
 ========================== */
-
-
 #cerrarCarrito  {
   position: absolute;
-  top: 26px; right: 8px;
-  background: transparent; border: none;
-  font-size: 1.2rem;
+  top: 20px;
+  right: 20px;
+  background: transparent; 
+  border: none;
+  font-size: 1.5rem;
   cursor: pointer;
   color: #000000;
+  z-index: 1010;
 }
 
 /* ==========================
    LISTA DE PRODUCTOS
 ========================== */
 #carritoProductos {
-  max-height: 500px;
+  flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -159,13 +162,10 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .carrito-item img {
-  width: 35%; /* imágenes un poco más pequeñas */
+  width: 50%; 
   border-radius: 6px;
   object-fit: cover;
 }
@@ -180,52 +180,35 @@
   gap: 0.3rem;
 }
 
+/* TÍTULO DEL PRODUCTO */
+.carrito-info p.titulo-producto {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 0.3rem;
+}
+
+/* INFO SECUNDARIA */
 .carrito-info p {
-  margin: 0.2rem 0;
   font-size: 0.95rem;
   color: #333;
+  margin: 0.2rem 0;
 }
 
 /* ==========================
-   BOTÓN ELIMINAR (AL LADO DE INFO)
-========================== */
-.btn-eliminar-carrito {
-  background: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 0.4rem 0.7rem; /* más pequeño */
-  border-radius: 6px;
-  cursor: pointer;
-  align-self: flex-start;
-  margin-top: 4.2rem; /* margen superior para que quede al medio */
-  transition: background 0.2s ease, transform 0.2s ease;
-  font-weight: bold;
-  height: fit-content;
-}
-
-.btn-eliminar-carrito:hover {
-  background: #a71d2a;
-  transform: scale(1.05);
-}
-
-/* ==========================
-   SUBTOTAL
-========================== */
-.subtotal {
-  font-weight: bold;
-  font-size: 1rem;
-  color: #000;
-}
-
-/* ==========================
-   CONTROL DE CANTIDAD (ABAJO DE INFO)
+   CONTROL DE CANTIDAD Y BOTÓN ELIMINAR DEBAJO
 ========================== */
 .carrito-cantidad {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  flex-direction: column; /* vertical: botones + y - arriba, eliminar abajo */
+  align-items: flex-start;
+  gap: 0.3rem;
   margin-top: 0.5rem;
+}
+
+.carrito-cantidad .botones-cantidad {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .carrito-cantidad button {
@@ -243,6 +226,33 @@
   background: #0056b3;
 }
 
+/* BOTÓN ELIMINAR DEBAJO */
+.btn-eliminar-carrito {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease, transform 0.2s ease;
+  align-self: flex-start;
+}
+
+.btn-eliminar-carrito:hover {
+  background: #a71d2a;
+  transform: scale(1.05);
+}
+
+/* ==========================
+   SUBTOTAL
+========================== */
+.subtotal {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #000;
+}
+
 /* ==========================
    BOTONES GENERALES
 ========================== */
@@ -258,7 +268,7 @@
 }
 
 #vaciarCarrito {
-  background: #dc3545; /* rojo */
+  background: #dc3545;
   color: #fff;
 }
 
