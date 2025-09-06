@@ -46,11 +46,19 @@
       margin-bottom: 10px;
       border-radius: 5px;
       box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
     }
 
-    li span {
+    .info {
       flex: 1;
       word-break: break-word;
+      margin-right: 10px;
+    }
+
+    .info small {
+      display: block;
+      color: #666;
+      font-size: 13px;
     }
 
     button {
@@ -128,25 +136,32 @@
       facturas.forEach(f => {
         const li = document.createElement("li");
 
-        const nombre = document.createElement("span");
-        nombre.textContent = f;
+        // Bloque de información
+        const info = document.createElement("div");
+        info.classList.add("info");
+        info.innerHTML = `
+          <strong>${f.nombre}</strong>
+          <small>📅 ${new Date(f.fecha).toLocaleString()} | 📄 ${f.tamañoKB} KB</small>
+        `;
 
+        // Botón Ver
         const verBtn = document.createElement("button");
         verBtn.textContent = "Ver";
         verBtn.classList.add("ver");
-        verBtn.onclick = () => window.open(`${BACKEND_URL}/uploads/${f}`, "_blank");
+        verBtn.onclick = () => window.open(f.url, "_blank");
 
+        // Botón Eliminar
         const eliminarBtn = document.createElement("button");
         eliminarBtn.textContent = "Eliminar";
         eliminarBtn.classList.add("eliminar");
         eliminarBtn.onclick = async () => {
-          if(confirm(`¿Seguro que quieres eliminar ${f}?`)) {
-            await fetch(`${BACKEND_URL}/api/facturas/${f}`, { method: "DELETE" });
+          if(confirm(`¿Seguro que quieres eliminar ${f.nombre}?`)) {
+            await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}`, { method: "DELETE" });
             cargarFacturas();
           }
         };
 
-        li.appendChild(nombre);
+        li.appendChild(info);
         li.appendChild(verBtn);
         li.appendChild(eliminarBtn);
 
@@ -157,11 +172,11 @@
     // Buscador en tiempo real
     buscador.addEventListener("input", () => {
       const filtro = buscador.value.toLowerCase();
-      const items = listaFacturas.querySelectorAll("li span");
+      const items = listaFacturas.querySelectorAll("li .info strong");
       let visibles = 0;
 
       items.forEach(span => {
-        const li = span.parentElement;
+        const li = span.closest("li");
         if(span.textContent.toLowerCase().includes(filtro)) {
           li.style.display = "";
           visibles++;
