@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Facturas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    #buscador {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+
+    li span {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    button.ver {
+      background-color: #4b90ff;
+    }
+
+    button.ver:hover {
+      background-color: #1e6fff;
+    }
+
+    button.eliminar {
+      background-color: #ff4b4b;
+    }
+
+    button.eliminar:hover {
+      background-color: #e03e3e;
+    }
+
+    .mensaje {
+      text-align: center;
+      color: #555;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mis Facturas</h1>
+
+    <input type="text" id="buscador" placeholder="Buscar factura por nombre..." />
+
+    <ul id="listaFacturas"></ul>
+    <p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
+  </div>
+
+  <script>
+    const listaFacturas = document.getElementById("listaFacturas");
+    const buscador = document.getElementById("buscador");
+    const mensajeVacio = document.getElementById("mensajeVacio");
+
+    // Cambia esto si tu backend corre en otro puerto
+    const BACKEND_URL = "http://localhost:5000";
+
+    async function cargarFacturas() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/facturas`);
+        const facturas = await res.json();
+        mostrarFacturas(facturas);
+      } catch (err) {
+        console.error(err);
+        mensajeVacio.textContent = "Error al cargar facturas.";
+      }
+    }
+
+    function mostrarFacturas(facturas) {
+      listaFacturas.innerHTML = "";
+
+      if (!facturas.length) {
+        mensajeVacio.textContent = "No hay facturas disponibles.";
+        return;
+      }
+
+      mensajeVacio.textContent = "";
+
+      facturas.forEach(f => {
+        const li = document.createElement("li");
+
+        const nombre = document.createElement("span");
+        nombre.textContent = f;
+
+        const verBtn = document.createElement("button");
+        verBtn.textContent = "Ver";
+        verBtn.classList.add("ver");
+        verBtn.onclick = () => window.open(`${BACKEND_URL}/uploads/${f}`, "_blank");
+
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.classList.add("eliminar");
+        eliminarBtn.onclick = async () => {
+          if(confirm(`¿Seguro que quieres eliminar ${f}?`)) {
+            await fetch(`${BACKEND_URL}/api/facturas/${f}`, { method: "DELETE" });
+            cargarFacturas();
+          }
+        };
+
+        li.appendChild(nombre);
+        li.appendChild(verBtn);
+        li.appendChild(eliminarBtn);
+
+        listaFacturas.appendChild(li);
+      });
+    }
+
+    // Buscador en tiempo real
+    buscador.addEventListener("input", () => {
+      const filtro = buscador.value.toLowerCase();
+      const items = listaFacturas.querySelectorAll("li span");
+      let visibles = 0;
+
+      items.forEach(span => {
+        const li = span.parentElement;
+        if(span.textContent.toLowerCase().includes(filtro)) {
+          li.style.display = "";
+          visibles++;
+        } else {
+          li.style.display = "none";
+        }
+      });
+
+      mensajeVacio.textContent = visibles === 0 ? "No se encontraron facturas." : "";
+    });
+
+    // Inicializar
+    cargarFacturas();
+  </script>
+</body>
+</html>

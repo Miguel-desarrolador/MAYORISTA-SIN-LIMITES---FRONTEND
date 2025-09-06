@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda</title>
+  <link rel="stylesheet" href="carrito.css">
+  <link rel="stylesheet" href="categoriaBuscador.css">
+  <link rel="stylesheet" href="finalizarCompra.css">
+  <link rel="stylesheet" href="codigoAcceso.css">
+  <link rel="stylesheet" href="styles.css">
+  <!-- AOS CSS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+</head>
+<body>
+  
+ 
+
+    <header>
+        <img data-aos="fade-right" src="logo.png" alt="Logo de la empresa" class="logo-gorra">
+        <div class="logo"> <h1 data-aos="fade-down"> MAYORISTA</h1>
+            <h1 data-aos="fade-left" class="logo-text">SIN LIMITES</h1>
+        </div>
+        
+        
+        <nav class="nav-linkss" id="nav-links">
+            
+        <img  src="logo.png" alt="Logo de la empresa" class="logo-gorra">
+        <div class="logo"> <h1> MAYORISTA</h1>
+            <span class="logo-text">SIN LIMITES</span>
+        </div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+<li><a href="#envio">Envios</a></li>
+  
+<li><a href="https://wa.me/543329513047?text=He%20visto%20tus%20productos%20en%20la%20p%C3%A1gina%20y%20estoy%20interesado/a" target="_blank">Contacto</a></li>
+              
+
+<div id="verificarEmpleado" style="margin: 15px 0;">
+<!-- Botón de Acceso Empleados -->
+<button id="btnAbrirCodigo" class="btn-acceso">💼 Acceso Empleados</button>
+</div>
+
+
+
+
+<!-- Aquí aparecerá el botón "Cerrar empleados" -->
+<div id="botonCerrarEmpleadoContainer" style="margin-top: 15px;"></div>
+        
+            </ul>
+        </nav>
+        <div class="menu-toggle" id="menu-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </header>
+
+ 
+
+
+
+
+
+
+  
+<!-- Modal Código de Acceso -->
+<div id="modalCodigo" class="modal-acceso oculto">
+  <div class="modal-contenido-acceso">
+    <h2 class="modal-titulo">🔑 Código de Acceso</h2>
+    <p class="modal-descripcion">Ingrese el código de 4 dígitos para habilitar opciones</p>
+    <input type="password" id="inputCodigoAcceso" maxlength="4" placeholder="****" class="input-codigo" />
+    <div class="modal-botones-acceso">
+      <button id="btnValidarCodigo" class="btn-validar">✅ Validar</button>
+      <button id="btnCerrarModalCodigo" class="btn-cancelar">❌ Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón para ir a la página de facturas -->
+<div class="btn-ir-facturas-container">
+  <a href="misFacturas.html" class="btn-ir-facturas" id="btnIrCompras">Ir a mis Compras</a>
+</div>
+
+
+<div class="btn-abrir-container">
+<!-- Botón abrir modal -->
+<button  id="btnAbrirModal" class="btn-primario">➕ Agregar Producto</button>
+</div>
+
+
+<!-- Modal -->
+<div id="modalAgregarProducto" class="modal oculto">
+  <div class="modal-contenido">
+    <h2>Agregar Producto</h2>
+    <form id="formAgregarProducto">
+      <label>Nombre:</label>
+      <input type="text" id="inputNombre" required />
+
+      <label>Precio:</label>
+      <input type="number" id="inputPrecio" min="0" required />
+
+      <label>Stock:</label>
+      <input type="number" id="inputStock" min="0" required />
+
+      <label>Categoría:</label>
+      <select id="inputCategoria"></select>
+      <input type="text" id="inputNuevaCategoria" placeholder="Nueva categoría (opcional)" />
+
+      <input type="file" id="inputImagen">
+<img id="previewImagen" src="" alt="Preview" style="max-width:150px; display:none;">
+
+      <div class="modal-botones">
+        <button type="submit" class="btn-guardar">Guardar</button>
+        <button type="button" id="btnCerrarModal" class="btn-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<h2 class="seccion-titulo" data-aos="fade-down">Nuestros Productos</h2>
+
+
+  <!-- Buscador y filtro -->
+  <div data-aos="fade-right" class="filtros">
+    <input type="text" id="buscadorTexto" placeholder="Buscar por nombre...">
+    <select id="filtroCategoria">
+      <option value="">Todas las categorías</option>
+      <!-- Las categorías se cargarán dinámicamente desde la base de datos -->
+    </select>
+  </div>
+
+  <!-- Contenedor de productos -->
+  <div id="productos" class="grid"></div>
+
+
+  <!-- Paginacion -->
+<div id="paginacion"></div>
+
+
+
+
+
+
+ 
+    
+    
+    <section  class="formas-pago">
+    <h2  >Formas de Pago</h2>
+        
+    <div class="metodo">
+        <i data-aos="fade-right" class="fas fa-exchange-alt metodo-logo"></i>  <!-- Icono de Transferencia -->
+        <p data-aos="fade-right">Recibimos tu pago mediante transferencia.</p>
+    </div>
+</section>
+    
+
+<!-- En tu <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+   <button class="scroll-to-top" title="Volver arriba">
+  <i class="fas fa-arrow-up"></i>
+</button>
+    
+    
+    <!-- Icono de WhatsApp flotante -->
+<a href="https://wa.me/+5493329317141" target="_blank" class="whatsapp-icon">
+  <i class="fab fa-whatsapp"></i>
+</a>
+    
+    <div class="envios-container">
+    <h2>Envíos a todo el país</h2>
+    <div class="truck-container">
+        <i class="fas fa-truck"></i>
+    </div>
+</div>
+    
+<section id="envio">
+    <h2 data-aos="fade-right">Envío</h2>
+    <p>Trabajamos con <strong>Correo Argentino</strong> para los envíos. El cliente puede elegir entre las siguientes opciones:</p>
+    <ul>
+        <li><strong>A domicilio:</strong> El envío se realiza a tu dirección. (Ver condiciones y costos adicionales).</li>
+        <li><strong>Retiro en sucursal:</strong> Puedes retirar tu pedido en la sucursal más cercana de <strong>Correo Argentino</strong>.</li>
+    </ul>
+    <p>Es importante que nos indiques cuál opción prefieres al realizar la compra.</p>
+</section>
+
+<section id="cargo-envio">
+    <h2 data-aos="fade-right" >Via Cargo</h2>
+    <p>El costo de envío se abona al momento de retirar el paquete en la sucursal de <strong>Via Cargo</strong>.</p>
+    <p>En caso de optar por la entrega a domicilio, el costo de envío será calculado y te informaremos el monto correspondiente.</p>
+</section>
+    
+    
+    <div id="loader" style="display: none; text-align: center; margin-top: 20px;">
+  <p>Generando PDF, por favor espera y gracias por su compra...</p>
+</div>
+    
+
+<footer id="footer">
+    <div class="footer-content">
+        <!-- Redes Sociales -->
+        <div class="footer-social">
+            <h3 data-aos="fade-right">Redes Sociales</h3>
+            <div data-aos="fade-right" class="social-icons">
+                <a href="https://www.facebook.com/share/1ExXiWNjMM/" class="social-icon facebook" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@sinlimitemayorista?_t=ZM-8uhxanvieJx&_r=1" class="social-icon twitter" target="_blank" title="Twitter"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/mtcaps.mayorista.sp?igsh=MTd6MWdjZjMzMWhwcg==" class="social-icon instagram" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+        </div>
+
+        <!-- Días y Horarios -->
+        <div class="footer-hours">
+            <h3>Días y Horarios</h3>
+            <p>Lunes a Viernes: 8 a 22 hs</p>
+            <p>Sábado : de 13 a 20 hs</p>
+            <p>Domingos: 18 a 21 hs</p>
+        </div>
+        <!-- Envíos a domicilio -->
+<div class="footer-shipping">
+    <h3 data-aos="fade-right">SAN PEDRO <hr data-aos="fade-right"> Provincia de Buenos Aires Argentina</h3>
+</div>
+    <div class="footer-info">
+        <p>&copy; 2025 Mayorista <span class="footer-nombre">Sin Límites</span>. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+  <!-- Icono flotante del carrito -->
+
+  
+   <div class="carrito-icono" id="iconoCarrito">
+        <img src="img/icon.gif" alt="Carrito">
+        <div class="contador" id="cantidadCarrito">0</div></div>
+    
+
+  <!-- Carrito flotante -->
+  <div id="carritoFlotante">
+    <button id="cerrarCarrito">✖</button>
+   
+    <div id="logo">
+  <img src="logo.png" alt="Logo de la empresa" class="logo-gorra">
+        <div class="logo"> <h1 class="mayorista" >MAYORISTA</h1> <span class="logo-text">SIN LIMITES</span>
+        </div> </div>
+
+    <div id="carritoProductos"></div>
+    <p class="total">Total: $<span id="totalCarrito">0</span></p>
+    <button id="vaciarCarrito">🗑️ Vaciar carrito</button>
+    <button id="finalizarCompra">Finalizar compra</button>
+  </div>
+
+
+<!-- Modal datos cliente -->
+<div id="modalDatosCliente" class="modal oculto modal-cliente">
+  <div class="modal-content modal-cliente-content">
+    <button class="cerrar-modal btn-cerrar-modal" id="cerrarModalDatos">&times;</button>
+    <h3 class="modal-titulo">Datos del Cliente</h3>
+    <form id="formDatosCliente" class="form-cliente">
+      <label class="form-label">Nombre
+        <input type="text" id="inputNombreCliente" class="form-input" required>
+      </label>
+      <label class="form-label">DNI
+        <input type="text" id="inputDNI" class="form-input" required>
+      </label>
+      <label class="form-label">Celular
+        <input type="text" id="inputCelular" class="form-input" required>
+      </label>
+      <label class="form-label">Provincia
+        <input type="text" id="inputProvincia" class="form-input" required>
+      </label>
+      <label class="form-label">Localidad
+        <input type="text" id="inputLocalidad" class="form-input" required>
+      </label>
+      <label class="form-label">Código Postal
+        <input type="text" id="inputCodigoPostal" class="form-input" required>
+      </label>
+      <label class="form-label">Email
+        <input type="email" id="inputEmailCliente" class="form-input" required>
+      </label>
+      <label class="form-label">Envío
+  <select id="selectEnvio" class="form-select" required>
+    <option value="CorreoArgentino">Correo Argentino</option>
+    <option value="ViaCarga">Via Cargo</option>
+  </select>
+</label>
+
+      </label>
+      <label class="form-label">Dispositivo
+        <select id="selectDispositivo" class="form-select" required>
+          <option value="Android">Android</option>
+          <option value="iPhone">iPhone</option>
+        </select>
+      </label>
+      <button type="button" id="btnAutocompletar" class="btn-autocompletar">Autocompletar Datos</button>
+
+      <button type="submit" class="btn-submit">Finalizar Compra</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1200, // duración de la animación en ms
+    once: true      // que la animación ocurra solo una vez
+  });
+</script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

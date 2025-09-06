@@ -1,0 +1,129 @@
+/* ===========================
+   Modal Datos Cliente - Compacto
+=========================== */
+.modal-cliente {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.35);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1002;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.modal-cliente:not(.oculto) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-cliente-content {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 360px;
+  position: relative;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transform: translateY(-15px);
+  transition: transform 0.25s;
+}
+
+.modal-cliente:not(.oculto) .modal-cliente-content {
+  transform: translateY(0);
+}
+
+.btn-cerrar-modal {
+  position: absolute;
+  top: 6px; right: 8px;
+  background: transparent; border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.modal-titulo {
+  margin-bottom: 0.7rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Formulario compacto */
+.form-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.form-input,
+.form-select {
+  padding: 0.35rem 0.5rem;
+  margin-top: 0.15rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 4px rgba(40,167,69,0.3);
+}
+
+.btn-submit {
+  padding: 0.45rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #28a745;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+  background-color: #218838;
+}
+
+
+/* Botón de autocompletar */
+.btn-autocompletar {
+  display: inline-block;
+  margin: 10px 0; /* espacio arriba y abajo */
+  padding: 10px 10px;
+  background-color: #a7282c; 
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-autocompletar:hover {
+  background-color: #218838; /* verde más oscuro al pasar el mouse */
+  transform: translateY(-2px);
+}
+
+.btn-autocompletar:active {
+  background-color: #1e7e34; /* verde aún más oscuro al presionar */
+  transform: translateY(0);
+}
+
+.btn-autocompletar:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.4); /* halo al hacer focus */
+}

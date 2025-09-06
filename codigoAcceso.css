@@ -1,0 +1,183 @@
+/* ===========================
+   Modal Código de Acceso
+=========================== */
+.modal-acceso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* sombra oscura */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* muy alto para que esté sobre todo */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-acceso:not(.oculto) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-contenido-acceso {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transform: translateY(-20px);
+  transition: transform 0.25s ease;
+}
+
+.modal-acceso:not(.oculto) .modal-contenido-acceso {
+  transform: translateY(0);
+}
+
+.modal-titulo {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.modal-descripcion {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.input-codigo {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.modal-botones-acceso {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn-validar, .btn-cancelar {
+  flex: 1;
+  padding: 0.5rem 0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-validar {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-validar:hover {
+  background-color: #218838;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-cancelar:hover {
+  background-color: #c82333;
+}
+/* ==========================
+   Botón Acceso Empleados
+========================== */
+.btn-acceso {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* espacio entre icono y texto */
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff; /* azul moderno */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-acceso:hover {
+  background-color: #0056b3; /* azul más oscuro */
+  transform: translateY(-2px);
+}
+
+.btn-acceso:active {
+  background-color: #004080;
+  transform: translateY(0);
+}
+
+.btn-acceso:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.4); /* halo al hacer focus */
+}
+
+
+/* PAGINACION botones*/
+
+/* Contenedor de paginación */
+.paginacion-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Botones generales */
+.paginacion-btn {
+  padding: 8px 14px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  min-width: 40px;
+}
+
+/* Hover */
+.paginacion-btn:hover:not(:disabled) {
+  background-color: #2874f0;
+  color: #fff;
+  border-color: #2874f0;
+}
+
+/* Botón activo */
+.paginacion-btn.activo {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+/* Botón deshabilitado */
+.paginacion-btn:disabled {
+  background-color: #ddd;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ccc;
+}
+
+/* Responsive: botones pequeños en pantallas chicas */
+@media (max-width: 480px) {
+  .paginacion-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
