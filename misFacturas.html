@@ -11,18 +11,15 @@
       margin: 0;
       padding: 20px;
     }
-
     .container {
       max-width: 800px;
       margin: 0 auto;
     }
-
     h1 {
       text-align: center;
       color: #333;
       margin-bottom: 20px;
     }
-
     #buscador {
       width: 100%;
       padding: 10px;
@@ -31,12 +28,10 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-
     ul {
       list-style: none;
       padding: 0;
     }
-
     li {
       display: flex;
       justify-content: space-between;
@@ -48,19 +43,16 @@
       box-shadow: 0 0 4px rgba(0,0,0,0.1);
       flex-wrap: wrap;
     }
-
     .info {
       flex: 1;
       word-break: break-word;
       margin-right: 10px;
     }
-
     .info small {
       display: block;
       color: #666;
       font-size: 13px;
     }
-
     button {
       margin-left: 10px;
       padding: 5px 10px;
@@ -69,23 +61,10 @@
       cursor: pointer;
       color: #fff;
     }
-
-    button.ver {
-      background-color: #4b90ff;
-    }
-
-    button.ver:hover {
-      background-color: #1e6fff;
-    }
-
-    button.eliminar {
-      background-color: #ff4b4b;
-    }
-
-    button.eliminar:hover {
-      background-color: #e03e3e;
-    }
-
+    button.ver { background-color: #4b90ff; }
+    button.ver:hover { background-color: #1e6fff; }
+    button.eliminar { background-color: #ff4b4b; }
+    button.eliminar:hover { background-color: #e03e3e; }
     .mensaje {
       text-align: center;
       color: #555;
@@ -97,9 +76,7 @@
 <body>
   <div class="container">
     <h1>Mis Facturas</h1>
-
     <input type="text" id="buscador" placeholder="Buscar factura por nombre..." />
-
     <ul id="listaFacturas"></ul>
     <p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
   </div>
@@ -109,13 +86,12 @@
     const buscador = document.getElementById("buscador");
     const mensajeVacio = document.getElementById("mensajeVacio");
 
-    // Cambia esto si tu backend corre en otro puerto
-   
-const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway.app";
+    const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway.app";
 
     async function cargarFacturas() {
       try {
         const res = await fetch(`${BACKEND_URL}/api/facturas`);
+        if (!res.ok) throw new Error("Error en la petición");
         const facturas = await res.json();
         mostrarFacturas(facturas);
       } catch (err) {
@@ -126,18 +102,16 @@ const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway
 
     function mostrarFacturas(facturas) {
       listaFacturas.innerHTML = "";
-
       if (!facturas.length) {
         mensajeVacio.textContent = "No hay facturas disponibles.";
         return;
       }
-
       mensajeVacio.textContent = "";
 
       facturas.forEach(f => {
         const li = document.createElement("li");
 
-        // Bloque de información
+        // Información del PDF
         const info = document.createElement("div");
         info.classList.add("info");
         info.innerHTML = `
@@ -157,15 +131,20 @@ const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway
         eliminarBtn.classList.add("eliminar");
         eliminarBtn.onclick = async () => {
           if(confirm(`¿Seguro que quieres eliminar ${f.nombre}?`)) {
-            await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}`, { method: "DELETE" });
-            cargarFacturas();
+            try {
+              const res = await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}`, { method: "DELETE" });
+              if (!res.ok) throw new Error("Error al eliminar");
+              cargarFacturas();
+            } catch (err) {
+              alert("No se pudo eliminar la factura.");
+              console.error(err);
+            }
           }
         };
 
         li.appendChild(info);
         li.appendChild(verBtn);
         li.appendChild(eliminarBtn);
-
         listaFacturas.appendChild(li);
       });
     }
