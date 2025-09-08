@@ -97,7 +97,7 @@
       display: flex;
       gap: 10px;
       flex-shrink: 0;
-      margin-left: auto; /* Esto empuja los botones al lado derecho */
+      margin-left: auto;
     }
 
     button {
@@ -129,6 +129,15 @@
       box-shadow: 0 4px 12px rgba(224,62,62,0.4);
     }
 
+    button.cancelar {
+      background: #ffa500;
+    }
+    button.cancelar:hover {
+      background: #ff8c00;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255,140,0,0.4);
+    }
+
     .mensaje {
       text-align: center;
       color: #555;
@@ -136,7 +145,6 @@
       margin-top: 20px;
     }
 
-    /* Responsivo */
     @media (max-width: 600px) {
       li {
         flex-direction: column;
@@ -147,7 +155,6 @@
         margin-top: 10px;
       }
     }
-
   </style>
 </head>
 <body>
@@ -220,8 +227,23 @@ function mostrarFacturas(facturas) {
       }
     };
 
+    // Botón Cancelar
+    const cancelarBtn = document.createElement("button");
+    cancelarBtn.textContent = "Cancelar";
+    cancelarBtn.classList.add("cancelar");
+    cancelarBtn.onclick = async () => {
+      if(confirm(`¿Cancelar el pedido de ${f.nombre}?`)) {
+        const res = await fetch(`${BACKEND_URL}/api/pedidos/cancelar/${f.pedidoId}`, { method: "POST" });
+        if (!res.ok) return alert("Error al cancelar pedido");
+        alert("Pedido cancelado y stock restaurado");
+        cargarFacturas();
+      }
+    };
+
+    // Añadir botones al contenedor
     botones.appendChild(verBtn);
     botones.appendChild(eliminarBtn);
+    botones.appendChild(cancelarBtn);
 
     li.appendChild(info);
     li.appendChild(botones);
@@ -238,7 +260,7 @@ buscador.addEventListener("input", () => {
   items.forEach(li => {
     const texto = li.querySelector(".info").textContent.toLowerCase();
     if (texto.includes(filtro)) {
-      li.style.display = "flex";z
+      li.style.display = "flex";
       visibles++;
     } else {
       li.style.display = "none";
