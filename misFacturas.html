@@ -129,6 +129,15 @@
       box-shadow: 0 4px 12px rgba(224,62,62,0.4);
     }
 
+    button.cancelar {
+      background: #ff9800;
+    }
+    button.cancelar:hover {
+      background: #e68900;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230,137,0,0.4);
+    }
+
     .mensaje {
       text-align: center;
       color: #555;
@@ -147,7 +156,6 @@
         margin-top: 10px;
       }
     }
-
   </style>
 </head>
 <body>
@@ -220,8 +228,31 @@ function mostrarFacturas(facturas) {
       }
     };
 
+    // Botón Cancelar
+    const cancelarBtn = document.createElement("button");
+    cancelarBtn.textContent = "Cancelar";
+    cancelarBtn.classList.add("cancelar");
+    cancelarBtn.onclick = async () => {
+      if(confirm(`¿Cancelar pedido de ${f.nombre}?`)) {
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/pedidos/cancelar/${encodeURIComponent(f._id)}`, {
+            method: "POST"
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.msg || "Error al cancelar");
+          alert("✅ Pedido cancelado y stock devuelto");
+          cargarFacturas();
+        } catch (err) {
+          console.error(err);
+          alert("❌ Error al cancelar pedido");
+        }
+      }
+    };
+
+    // Agregar botones
     botones.appendChild(verBtn);
     botones.appendChild(eliminarBtn);
+    botones.appendChild(cancelarBtn);
 
     li.appendChild(info);
     li.appendChild(botones);
