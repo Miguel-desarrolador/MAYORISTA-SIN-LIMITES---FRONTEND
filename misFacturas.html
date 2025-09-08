@@ -5,80 +5,158 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mis Facturas</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+    /* =========================
+       RESET Y TIPOGRAFÍA
+    ========================= */
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
       padding: 20px;
     }
+
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
+
     h1 {
       text-align: center;
-      color: #333;
-      margin-bottom: 20px;
+      font-size: 2rem;
+      color: #1a1a1a;
+      margin-bottom: 25px;
     }
+
     #buscador {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
+      padding: 12px 15px;
+      margin-bottom: 25px;
       font-size: 16px;
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
+
+    #buscador:focus {
+      outline: none;
+      border-color: #4b90ff;
+      box-shadow: 0 0 6px rgba(75,144,255,0.4);
+    }
+
     ul {
       list-style: none;
       padding: 0;
     }
+
     li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #fff;
-      padding: 10px 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      background: #f9f9f9;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
       flex-wrap: wrap;
     }
+
+    li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
     .info {
       flex: 1;
       word-break: break-word;
-      margin-right: 10px;
     }
+
+    .info strong {
+      font-size: 1.1rem;
+      color: #1a1a1a;
+    }
+
     .info small {
       display: block;
-      color: #666;
-      font-size: 13px;
+      color: #777;
+      font-size: 0.85rem;
+      margin-top: 4px;
     }
+
+    .botones {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+      margin-left: auto; /* Esto empuja los botones al lado derecho */
+    }
+
     button {
-      margin-left: 10px;
-      padding: 5px 10px;
+      padding: 8px 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
       color: #fff;
     }
-    button.ver { background-color: #4b90ff; }
-    button.ver:hover { background-color: #1e6fff; }
-    button.eliminar { background-color: #ff4b4b; }
-    button.eliminar:hover { background-color: #e03e3e; }
+
+    button.ver {
+      background: #4b90ff;
+    }
+    button.ver:hover {
+      background: #1e6fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30,111,255,0.4);
+    }
+
+    button.eliminar {
+      background: #ff4b4b;
+    }
+    button.eliminar:hover {
+      background: #e03e3e;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(224,62,62,0.4);
+    }
+
     .mensaje {
       text-align: center;
       color: #555;
       font-size: 16px;
       margin-top: 20px;
     }
+
+    /* Responsivo */
+    @media (max-width: 600px) {
+      li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .botones {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Mis Facturas</h1>
     <input type="text" id="buscador" placeholder="Buscar factura por nombre..." />
-<ul id="listaFacturas"></ul>
-<p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
+    <ul id="listaFacturas"></ul>
+    <p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
+  </div>
 
 <script>
 const listaFacturas = document.getElementById("listaFacturas");
@@ -120,6 +198,10 @@ function mostrarFacturas(facturas) {
       <small>📅 ${new Date(f.fecha).toLocaleString()} | 📄 ${f.tamañoKB} KB</small>
     `;
 
+    // Contenedor de botones
+    const botones = document.createElement("div");
+    botones.classList.add("botones");
+
     // Botón Ver
     const verBtn = document.createElement("button");
     verBtn.textContent = "Ver";
@@ -138,48 +220,11 @@ function mostrarFacturas(facturas) {
       }
     };
 
-    // Botón Cancelar → restaura stock sin borrar PDF
-    const cancelarBtn = document.createElement("button");
-cancelarBtn.textContent = "Cancelar Pedido";
-cancelarBtn.classList.add("cancelar");
-cancelarBtn.onclick = async () => {
-  if (confirm(`¿Seguro que quieres cancelar ${f.nombre}?`)) {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/facturas/cancelar/${encodeURIComponent(f.nombre)}`, {
-        method: "POST"
-      });
-
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        data = {};
-      }
-
-      if (!res.ok) {
-        const msg = data.msg || `No se pudo cancelar ${f.nombre}`;
-        alert(msg);
-        console.error("Error al cancelar pedido:", msg);
-        return;
-      }
-
-      alert(data.msg || `Pedido ${f.nombre} cancelado correctamente`);
-      cargarFacturas();
-
-    } catch (err) {
-      console.error("Error de red o inesperado:", err);
-      alert("Ocurrió un error al cancelar el pedido. Intenta nuevamente.");
-    }
-  }
-};
-
-
-
+    botones.appendChild(verBtn);
+    botones.appendChild(eliminarBtn);
 
     li.appendChild(info);
-    li.appendChild(verBtn);
-    li.appendChild(eliminarBtn);
-    li.appendChild(cancelarBtn);
+    li.appendChild(botones);
     listaFacturas.appendChild(li);
   });
 }
@@ -187,21 +232,24 @@ cancelarBtn.onclick = async () => {
 // Buscador en tiempo real
 buscador.addEventListener("input", () => {
   const filtro = buscador.value.toLowerCase();
-  const items = listaFacturas.querySelectorAll("li .info strong");
+  const items = listaFacturas.querySelectorAll("li");
   let visibles = 0;
-  items.forEach(span => {
-    const li = span.closest("li");
-    if(span.textContent.toLowerCase().includes(filtro)) {
-      li.style.display = "";
+
+  items.forEach(li => {
+    const texto = li.querySelector(".info").textContent.toLowerCase();
+    if (texto.includes(filtro)) {
+      li.style.display = "flex";
       visibles++;
-    } else li.style.display = "none";
+    } else {
+      li.style.display = "none";
+    }
   });
+
   mensajeVacio.textContent = visibles === 0 ? "No se encontraron facturas." : "";
 });
 
 // Inicializar
 cargarFacturas();
 </script>
-
 </body>
 </html>
