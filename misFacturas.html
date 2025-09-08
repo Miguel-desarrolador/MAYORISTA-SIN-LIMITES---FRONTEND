@@ -65,6 +65,8 @@
     button.ver:hover { background-color: #1e6fff; }
     button.eliminar { background-color: #ff4b4b; }
     button.eliminar:hover { background-color: #e03e3e; }
+    button.cancelar { background-color: #ffa500; }
+    button.cancelar:hover { background-color: #ff8c00; }
     .mensaje {
       text-align: center;
       color: #555;
@@ -142,9 +144,28 @@
           }
         };
 
+        // Botón Cancelar Pedido
+        const cancelarBtn = document.createElement("button");
+        cancelarBtn.textContent = "Cancelar";
+        cancelarBtn.classList.add("cancelar");
+        cancelarBtn.onclick = async () => {
+          if(confirm(`¿Seguro que quieres cancelar ${f.nombre}? Esto devolverá el stock de los productos.`)) {
+            try {
+              const res = await fetch(`${BACKEND_URL}/api/facturas/cancelar/${encodeURIComponent(f.nombre)}`, { method: "POST" });
+              if(!res.ok) throw new Error("Error al cancelar pedido");
+              alert("Pedido cancelado y stock devuelto correctamente.");
+              cargarFacturas();
+            } catch(err) {
+              alert("No se pudo cancelar el pedido.");
+              console.error(err);
+            }
+          }
+        };
+
         li.appendChild(info);
         li.appendChild(verBtn);
         li.appendChild(eliminarBtn);
+        li.appendChild(cancelarBtn);
         listaFacturas.appendChild(li);
       });
     }
