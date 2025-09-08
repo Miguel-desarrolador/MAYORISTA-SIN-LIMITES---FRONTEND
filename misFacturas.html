@@ -65,8 +65,6 @@
     button.ver:hover { background-color: #1e6fff; }
     button.eliminar { background-color: #ff4b4b; }
     button.eliminar:hover { background-color: #e03e3e; }
-    button.cancelar { background-color: #ffa500; }
-    button.cancelar:hover { background-color: #ff8c00; }
     .mensaje {
       text-align: center;
       color: #555;
@@ -79,118 +77,118 @@
   <div class="container">
     <h1>Mis Facturas</h1>
     <input type="text" id="buscador" placeholder="Buscar factura por nombre..." />
-    <ul id="listaFacturas"></ul>
-    <p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
-  </div>
+<ul id="listaFacturas"></ul>
+<p class="mensaje" id="mensajeVacio">Cargando facturas...</p>
 
-  <script>
-    const listaFacturas = document.getElementById("listaFacturas");
-    const buscador = document.getElementById("buscador");
-    const mensajeVacio = document.getElementById("mensajeVacio");
+<script>
+const listaFacturas = document.getElementById("listaFacturas");
+const buscador = document.getElementById("buscador");
+const mensajeVacio = document.getElementById("mensajeVacio");
 
-    const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway.app";
+const BACKEND_URL = "https://mayorista-sin-limites-backend-production.up.railway.app";
 
-    async function cargarFacturas() {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/facturas`);
-        if (!res.ok) throw new Error("Error en la petición");
-        const facturas = await res.json();
-        mostrarFacturas(facturas);
-      } catch (err) {
-        console.error(err);
-        mensajeVacio.textContent = "Error al cargar facturas.";
+// Cargar todas las facturas
+async function cargarFacturas() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/facturas`);
+    if (!res.ok) throw new Error("Error al cargar facturas");
+    const facturas = await res.json();
+    mostrarFacturas(facturas);
+  } catch (err) {
+    console.error(err);
+    mensajeVacio.textContent = "Error al cargar facturas";
+  }
+}
+
+// Mostrar facturas en la lista
+function mostrarFacturas(facturas) {
+  listaFacturas.innerHTML = "";
+  if (!facturas.length) {
+    mensajeVacio.textContent = "No hay facturas disponibles";
+    return;
+  }
+  mensajeVacio.textContent = "";
+
+  facturas.forEach(f => {
+    const li = document.createElement("li");
+
+    // Info factura
+    const info = document.createElement("div");
+    info.classList.add("info");
+    info.innerHTML = `
+      <strong>${f.nombre}</strong>
+      <small>📅 ${new Date(f.fecha).toLocaleString()} | 📄 ${f.tamañoKB} KB</small>
+    `;
+
+    // Botón Ver
+    const verBtn = document.createElement("button");
+    verBtn.textContent = "Ver";
+    verBtn.classList.add("ver");
+    verBtn.onclick = () => window.open(f.url, "_blank");
+
+    // Botón Eliminar
+    const eliminarBtn = document.createElement("button");
+    eliminarBtn.textContent = "Eliminar";
+    eliminarBtn.classList.add("eliminar");
+    eliminarBtn.onclick = async () => {
+      if(confirm(`¿Eliminar ${f.nombre}?`)) {
+        const res = await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}`, { method: "DELETE" });
+        if (!res.ok) return alert("Error al eliminar factura");
+        cargarFacturas();
       }
-    }
+    };
 
-    function mostrarFacturas(facturas) {
-      listaFacturas.innerHTML = "";
-      if (!facturas.length) {
-        mensajeVacio.textContent = "No hay facturas disponibles.";
-        return;
-      }
-      mensajeVacio.textContent = "";
+    // Botón Cancelar → restaura stock sin borrar PDF
+    const cancelarBtn = document.createElement("button");
+cancelarBtn.textContent = "Cancelar Pedido";
+cancelarBtn.classList.add("cancelar");
 
-      facturas.forEach(f => {
-        const li = document.createElement("li");
-
-        // Información del PDF
-        const info = document.createElement("div");
-        info.classList.add("info");
-        info.innerHTML = `
-          <strong>${f.nombre}</strong>
-          <small>📅 ${new Date(f.fecha).toLocaleString()} | 📄 ${f.tamañoKB} KB</small>
-        `;
-
-        // Botón Ver
-        const verBtn = document.createElement("button");
-        verBtn.textContent = "Ver";
-        verBtn.classList.add("ver");
-        verBtn.onclick = () => window.open(f.url, "_blank");
-
-        // Botón Eliminar
-        const eliminarBtn = document.createElement("button");
-        eliminarBtn.textContent = "Eliminar";
-        eliminarBtn.classList.add("eliminar");
-        eliminarBtn.onclick = async () => {
-          if(confirm(`¿Seguro que quieres eliminar ${f.nombre}?`)) {
-            try {
-              const res = await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}`, { method: "DELETE" });
-              if (!res.ok) throw new Error("Error al eliminar");
-              cargarFacturas();
-            } catch (err) {
-              alert("No se pudo eliminar la factura.");
-              console.error(err);
-            }
-          }
-        };
-
-        // Botón Cancelar Pedido
-        const cancelarBtn = document.createElement("button");
-        cancelarBtn.textContent = "Cancelar";
-        cancelarBtn.classList.add("cancelar");
-        cancelarBtn.onclick = async () => {
-          if(confirm(`¿Seguro que quieres cancelar ${f.nombre}? Esto devolverá el stock de los productos.`)) {
-            try {
-              const res = await fetch(`${BACKEND_URL}/api/facturas/cancelar/${encodeURIComponent(f.nombre)}`, { method: "POST" });
-              if(!res.ok) throw new Error("Error al cancelar pedido");
-              alert("Pedido cancelado y stock devuelto correctamente.");
-              cargarFacturas();
-            } catch(err) {
-              alert("No se pudo cancelar el pedido.");
-              console.error(err);
-            }
-          }
-        };
-
-        li.appendChild(info);
-        li.appendChild(verBtn);
-        li.appendChild(eliminarBtn);
-        li.appendChild(cancelarBtn);
-        listaFacturas.appendChild(li);
+cancelarBtn.onclick = async () => {
+  if (confirm(`¿Seguro que quieres cancelar ${f.nombre}?`)) {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/facturas/cancelar/${encodeURIComponent(f.nombre)}`, {
+        method: "POST"
       });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.msg || "Error al cancelar pedido");
+
+      alert(data.msg); // ✅ muestra "Pedido cancelado y stock restaurado correctamente"
+      cargarFacturas();
+    } catch (err) {
+      alert(err.message);
+      console.error(err);
     }
+  }
+};
 
-    // Buscador en tiempo real
-    buscador.addEventListener("input", () => {
-      const filtro = buscador.value.toLowerCase();
-      const items = listaFacturas.querySelectorAll("li .info strong");
-      let visibles = 0;
 
-      items.forEach(span => {
-        const li = span.closest("li");
-        if(span.textContent.toLowerCase().includes(filtro)) {
-          li.style.display = "";
-          visibles++;
-        } else {
-          li.style.display = "none";
-        }
-      });
+    li.appendChild(info);
+    li.appendChild(verBtn);
+    li.appendChild(eliminarBtn);
+    li.appendChild(cancelarBtn);
+    listaFacturas.appendChild(li);
+  });
+}
 
-      mensajeVacio.textContent = visibles === 0 ? "No se encontraron facturas." : "";
-    });
+// Buscador en tiempo real
+buscador.addEventListener("input", () => {
+  const filtro = buscador.value.toLowerCase();
+  const items = listaFacturas.querySelectorAll("li .info strong");
+  let visibles = 0;
+  items.forEach(span => {
+    const li = span.closest("li");
+    if(span.textContent.toLowerCase().includes(filtro)) {
+      li.style.display = "";
+      visibles++;
+    } else li.style.display = "none";
+  });
+  mensajeVacio.textContent = visibles === 0 ? "No se encontraron facturas." : "";
+});
 
-    // Inicializar
-    cargarFacturas();
-  </script>
+// Inicializar
+cargarFacturas();
+</script>
+
 </body>
 </html>
