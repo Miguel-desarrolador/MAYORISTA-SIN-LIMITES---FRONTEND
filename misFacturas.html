@@ -142,25 +142,38 @@ function mostrarFacturas(facturas) {
     const cancelarBtn = document.createElement("button");
 cancelarBtn.textContent = "Cancelar Pedido";
 cancelarBtn.classList.add("cancelar");
-
 cancelarBtn.onclick = async () => {
   if (confirm(`¿Seguro que quieres cancelar ${f.nombre}?`)) {
     try {
       const res = await fetch(`${BACKEND_URL}/api/facturas/cancelar/${encodeURIComponent(f.nombre)}`, {
         method: "POST"
       });
-      const data = await res.json();
 
-      if (!res.ok) throw new Error(data.msg || "Error al cancelar pedido");
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = {};
+      }
 
-      alert(data.msg); // ✅ muestra "Pedido cancelado y stock restaurado correctamente"
+      if (!res.ok) {
+        const msg = data.msg || `No se pudo cancelar ${f.nombre}`;
+        alert(msg);
+        console.error("Error al cancelar pedido:", msg);
+        return;
+      }
+
+      alert(data.msg || `Pedido ${f.nombre} cancelado correctamente`);
       cargarFacturas();
+
     } catch (err) {
-      alert(err.message);
-      console.error(err);
+      console.error("Error de red o inesperado:", err);
+      alert("Ocurrió un error al cancelar el pedido. Intenta nuevamente.");
     }
   }
 };
+
+
 
 
     li.appendChild(info);
