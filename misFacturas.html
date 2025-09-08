@@ -220,14 +220,31 @@ function mostrarFacturas(facturas) {
       }
     };
 
+    // Botón Cancelar Pedido
+    const cancelarBtn = document.createElement("button");
+    cancelarBtn.textContent = "Cancelar Pedido";
+    cancelarBtn.style.background = "#ff9900"; // color naranja
+    cancelarBtn.onmouseover = () => cancelarBtn.style.background = "#e68a00";
+    cancelarBtn.onmouseout = () => cancelarBtn.style.background = "#ff9900";
+    cancelarBtn.onclick = async () => {
+      if(confirm(`¿Cancelar el pedido ${f.nombre}?`)) {
+        const res = await fetch(`${BACKEND_URL}/api/pedidos/cancelar/${f.pedidoId}`, { method: "POST" });
+        if (!res.ok) return alert("Error al cancelar pedido");
+        alert("Pedido cancelado y stock restaurado");
+        cargarFacturas();
+      }
+    };
+
     botones.appendChild(verBtn);
     botones.appendChild(eliminarBtn);
+    botones.appendChild(cancelarBtn); // agregamos aquí
 
     li.appendChild(info);
     li.appendChild(botones);
     listaFacturas.appendChild(li);
   });
 }
+
 
 // Buscador en tiempo real
 buscador.addEventListener("input", () => {
