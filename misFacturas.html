@@ -238,7 +238,7 @@ buscador.addEventListener("input", () => {
   items.forEach(li => {
     const texto = li.querySelector(".info").textContent.toLowerCase();
     if (texto.includes(filtro)) {
-      li.style.display = "flex";
+      li.style.display = "flex";z
       visibles++;
     } else {
       li.style.display = "none";
@@ -249,7 +249,7 @@ buscador.addEventListener("input", () => {
 });
 
 // Inicializar
-cargarFacturas();z
+cargarFacturas();
 </script>
 </body>
 </html>
