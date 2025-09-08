@@ -65,8 +65,6 @@
     button.ver:hover { background-color: #1e6fff; }
     button.eliminar { background-color: #ff4b4b; }
     button.eliminar:hover { background-color: #e03e3e; }
-    button.cancelar { background-color: #ff9900; }
-    button.cancelar:hover { background-color: #e68a00; }
     .mensaje {
       text-align: center;
       color: #555;
@@ -113,7 +111,7 @@
       facturas.forEach(f => {
         const li = document.createElement("li");
 
-        // Información
+        // Información del PDF
         const info = document.createElement("div");
         info.classList.add("info");
         info.innerHTML = `
@@ -144,35 +142,14 @@
           }
         };
 
-        // Botón Cancelar
-        const cancelarBtn = document.createElement("button");
-        cancelarBtn.textContent = "Cancelar";
-        cancelarBtn.classList.add("cancelar");
-        cancelarBtn.onclick = async () => {
-          if(confirm(`¿Seguro que quieres CANCELAR el pedido ${f.nombre}? Esto devolverá el stock a la base de datos.`)) {
-            try {
-              const res = await fetch(`${BACKEND_URL}/api/facturas/${encodeURIComponent(f.nombre)}/cancelar`, { 
-                method: "PUT"
-              });
-              if (!res.ok) throw new Error("Error al cancelar");
-              alert("Pedido cancelado y stock devuelto correctamente.");
-              cargarFacturas();
-            } catch (err) {
-              alert("No se pudo cancelar el pedido.");
-              console.error(err);
-            }
-          }
-        };
-
         li.appendChild(info);
         li.appendChild(verBtn);
-        li.appendChild(cancelarBtn);
         li.appendChild(eliminarBtn);
         listaFacturas.appendChild(li);
       });
     }
 
-    // Buscador
+    // Buscador en tiempo real
     buscador.addEventListener("input", () => {
       const filtro = buscador.value.toLowerCase();
       const items = listaFacturas.querySelectorAll("li .info strong");
