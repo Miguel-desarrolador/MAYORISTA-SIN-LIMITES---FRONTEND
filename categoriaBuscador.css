@@ -53,7 +53,7 @@ body {
 .filtros input,
 .filtros select {
   padding: 0.6rem 1rem;
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   border-radius: 6px;
   border: 1px solid #ccc;
   font-family: inherit;
@@ -102,7 +102,7 @@ body {
 }
 
 .producto img {
-  width: 100%;
+  width: 110%;
   height: auto;
   object-fit: cover;
   border-radius: 8px;
