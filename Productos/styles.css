@@ -39,14 +39,20 @@ header {
     font-weight: bold;
     color: gold; 
     margin-left: 5px;
+    letter-spacing: 1.6px;
 }
-
+.logo-text2 {
+    font-size: 15px;
+    font-weight: bold;
+    color: gold; 
+    margin-left: 75px;
+}
 .mayo{
     
     font-size: 20px;
     font-weight: bold;
     color: white;
-    margin-left: 18px;
+    margin-left: 60px;
 }
 header .logo-text {
     margin-left: 80px;
