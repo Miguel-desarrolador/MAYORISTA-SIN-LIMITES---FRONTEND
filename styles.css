@@ -1,5 +1,3 @@
-
-
 html {
   scroll-behavior: smooth;
 }
@@ -8,18 +6,17 @@ html {
     padding: 0;
     box-sizing: border-box;
 }
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
 
 body {
+  
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    animation: fadeIn 0.5s ease-in-out;
+    background-image: url('logo1.png'); /* Imagen de fondo */
+    background-size: 100%;
+  background-repeat: no-repeat;
+    background-position:top;
+    background-attachment: relative;
+    color: #000; /* Texto predeterminado negro para todo el contenido */
+    animation: fadeIn 1.5s ease-in-out; /* Animación de fade-in para todo el body */
 }
 
 header {
@@ -34,7 +31,7 @@ header {
     transition: background-color 0.3s ease;
 }
 
-.logo-text {
+header span {
     font-size: 23px;
     font-weight: bold;
     color: gold; 
@@ -44,7 +41,7 @@ header {
 
 header .logo-text {
     
-    margin-left: 80px;
+    margin-left: 60px;
     font-family: 'Arial', sans-serif;
 }
 
@@ -55,14 +52,7 @@ header .logo-text {
   left: 3px;
 }
 
-.logo-gorra-buscador
-{padding: 20px;
-  width: 100px;
-  height: auto;
-  position: relative;
-  
-  
-}
+
 header h1{
     
     font-size: 20px;
@@ -101,15 +91,100 @@ nav ul li a:hover {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+.inicio {
+    margin-top: -100px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    animation: fadeIn 2s ease-in-out; /* Animación de fade-in */
+}
 
-.nav-linkss ul {
+.inicio h1 {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: orangered;
+    animation: textFadeIn 2s ease-in-out; /* Animación de fade-in del texto */
+}
+
+.inicio p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    color: black; 
+    
+    animation: textFadeIn 2s ease-in-out 0.3s; /* Animación de fade-in con retraso */
+}
+
+.parrafo-titulo{
+    font-size: 1.4rem;
+    color:coral;
+    padding: 3px;
+    margin-left: 200px;
+    border-radius: 10px;
+}
+
+.inicio-content{
+  
+  margin-bottom: -500px;
+}
+hr {
+  margin: 10px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-cta {
+    background-color: mediumseagreen;
+    color: #fff;
+  margin-bottom: -50px;
+    text-decoration: none;
+    padding: 15px 50px;
+    font-size: 20px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cta:hover {
+    background-color: #ff4500;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes textFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para el menú hamburguesa deslizante */
+
+
+.nav-links ul {
     display: flex;
     gap: 30px;
     margin-top: 80px;
   list-style-type: none;
 }
 
-.nav-linkss {
+.nav-links {
     
     text-align: center;
     display: flex;
@@ -127,27 +202,27 @@ nav ul li a:hover {
     z-index: 99; /* Asegura que el menú se superponga */
 }
 
-.nav-linkss.active {
+.nav-links.active {
     transform: translateX(0);
 }
 
-.nav-linkss ul {
+.nav-links ul {
     flex-direction: column;
     gap: 15px;
 }
 
-.nav-linkss ul li {
+.nav-links ul li {
     margin-left: 0;
 }
 
-.nav-linkss ul li a {
+.nav-links ul li a {
     color: #fff;
     text-decoration: none;
     font-size: 19px;
     text-transform: uppercase;
 }
 
-.nav-linkss ul li a:hover {
+.nav-links ul li a:hover {
     color: #ff6347;
 }
 
@@ -168,18 +243,286 @@ nav ul li a:hover {
         transform: rotate(-45deg) translate(5px, -5px);
     }
 }
+.carousel {
+    background-color: white;
+    margin-bottom: -210px;
+  
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-inner {
+  display: flex;
+  animation: slide 15s infinite linear;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 85%;
+  text-align: center;
+  padding:8px;
+}
+
+.carousel-item img {
+  max-width: 100%;
+  max-height: 90px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item img:hover {
+  transform: scale(1.1);
+}
+
+.produc-container h2 {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+ .icono-gorra {
+    width: 20%; /* Ajusta el tamaño de la imagen */
+    height: auto;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-100%);
+  }
+  40% {
+    transform: translateX(-200%);
+  }
+  60% {
+    transform: translateX(-300%);
+  }
+  80% {
+    transform: translateX(-400%);
+  }
+  100% {
+    transform: translateX(-500%);
+  }
+}
 
 
+h4{
+    color:coral;
+    font-size: 1.5rem;
+    margin: 5px;
+}
 
+#productos {
+    margin-top: -130px;
+  padding: 30px;
+  background: linear-gradient(135deg, #ffff 0%, #f0f0f0 100%); /* Degradado de blanco a blanco más oscuro */
+  text-align: center;
+}
 
+#productos h2 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #333;
+  font-family: 'Poppins', sans-serif; /* Mejorar tipografía */
+  font-weight: 600;
+}
 
+/* Contenedor principal de los productos */
+
+.produc-title{
+    text-align: center;
+    font-size: 3rem;
+    color: coral;
+    
+}
+.produc-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin: 0px 0;
+    background-color: whitesmoke;
+}
+
+/* Contenedor de los productos */
+#produc {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Animación suave */
+}
+
+/* Estilo de los artículos */
+.articulos {
+    min-width: 300px;
+    margin: 15px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+.articulos:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+.articulos:nth-child(odd) {
+    animation-delay: 0.2s;
+}
+
+/* Animación de desvanecimiento */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Imagen de los productos */
+.articulos img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.articulos img:hover {
+    transform: scale(1.05); /* Efecto hover sobre la imagen */
+}
+
+/* Títulos y Descripción */
+.articulos h3 {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.articulos a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 18px;
+    background-color: #6c63ff; /* Un morado moderno y suave */
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.articulos a:hover {
+    background: linear-gradient(135deg, #6c63ff, #a890ff); /* Degradado más moderno */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.nav-buttons {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.nav-buttons button {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 50%; /* Botones completamente redondeados */
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nav-buttons button i {
+    font-size: 26px; /* Tamaño pequeño para las flechas */
+}
+
+.nav-buttons button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.nav-buttons button:focus {
+    outline: none;
+}
+
+.btn-ver-mas {
+  display: inline-block;
+  padding: 9px;
+  background: coral;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 25px;
+  font-weight: bold;
+  transition: background-color 1s ease, transform 1s ease;
+  margin: 0 auto;
+    width:80%;
+  animation: zoomEffect 2s ease-in-out infinite;
+}
+
+.btn-ver-mas i {
+    color:gold;
+  margin-left: 10px; /* Espacio entre el icono y el texto */
+}
+
+@keyframes zoomEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+      
+  }
+}
+
+.btn-ver-mas:hover {
+  background-color: aquamarine;
+  transform: translateY(-3px);
+}
+
+.btn-ver-mas:active {
+  background-color: #388e3c;
+  transform: translateY(1px);
+}
+
+.ver-mas {
+    margin-bottom: -15px;
+    padding: 13px;
+    background-color: whitesmoke;
+  text-align: center; /* Centra el contenido dentro de la sección */
+  
+}
 
 
 /* Estilos Generales del Footer */
-#footer {
-    background-color: rgba(0, 0, 0, 0.951);
+#footer {background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
-    padding: 40px 20px 110px;
+    padding: 60px 20px;
     text-align: center;
     font-family: 'Roboto', sans-serif;
     border-top: 3px solid #16a085;
@@ -242,6 +585,8 @@ display: inline-block;
 
 
 
+
+
 /* Efecto Hover */
 .social-icon:hover {
     transform: scale(1.2);
@@ -261,16 +606,127 @@ display: inline-block;
 }
 
 
+/* Sección de Días y Horarios */
+.footer-hours h3 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.footer-hours p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #bdc3c7;
+}
 
 
 
+/* Información adicional */
+.footer-info {
+    margin-top: 30px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: #bdc3c7;
+}
+
+.footer-info p {
+    margin: 0;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-social, .footer-hours, .footer-location {
+        margin-bottom: 30px;
+    }
+}
+
+.whatsapp-icon {
+  position: fixed;
+  bottom: 30px;
+  left: 10px;
+  background-color: #25D366;
+  padding: 16px;
+  border-radius: 80%;
+  font-size: 36px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  z-index: 9999;
+  opacity: 0.9;
+    text-decoration: none;
+}
+
+.whatsapp-icon:hover {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  background-color: #128C7E;
+  opacity: 1;
+}
+
+.whatsapp-icon i {
+  display: block;
+}
+
+.whatsapp-icon:active {
+  transform: scale(0.95);
+}
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
 
 
+.galeria {
+    margin-bottom: 40px;
+    margin-top: 180px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 5px;
+    padding: 50px 10px;
+    max-width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+    justify-content: center;
+}
 
+.imagen {
+    max-width: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change: opacity, transform;
+}
 
+.imagen img {
+    width: 90%;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    display: block;
+}
 
+.izquierda {
+    transform: translateX(-50px);
+}
 
+.derecha {
+    transform: translateX(50px);
+}
 
+.imagen.mostrar {
+    opacity: 1;
+    transform: translateX(0);
+}
 
 
 .formas-pago {
@@ -350,234 +806,4 @@ display: inline-block;
     font-size: 50px;
     position: relative;
     transition: transform 1.2s cubic-bezier(0.4, 0, 1, 1); /* Simula aceleración */
-}
-
-/* Sección de Días y Horarios */
-.footer-hours h3 {
-    font-size: 28px;
-    color: #fff;
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.footer-hours p {
-    font-size: 16px;
-    margin: 5px 0;
-    color: #bdc3c7;
-}
-
-
-
-/* Información adicional */
-.footer-info {
-    margin-top: 30px;
-    margin-bottom: 40px;
-    font-size: 14px;
-    color: #bdc3c7;
-}
-
-.footer-info p {
-    margin: 0;
-}
-
-/* Responsive para móviles */
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-social, .footer-hours, .footer-location {
-        margin-bottom: 30px;
-    }
-}
-
-hr {
-  margin: 10px;
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-
-
-
-
-
-
-
-/* Estilo general para las secciones */
-#envio, #cargo-envio {
-    padding: 2rem;
-    margin: 1.5rem 0;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Títulos */
-#envio h2, #cargo-envio h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 1rem;
-    font-family: 'Arial', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Párrafos */
-#envio p, #cargo-envio p {
-    font-size: 1rem;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Elementos destacados (strong) */
-#envio strong, #cargo-envio strong {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* Lista dentro de #envio */
-#envio ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 1rem;
-}
-
-#envio li {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 0.5rem;
-}
-
-/* Resaltar el primer ítem de la lista */
-#envio li strong {
-    color: #2980b9;
-}
-
-
-/* Estilo para el contenedor de envíos */
-.envios-container {
-    background-color: #3498db;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
-    margin: 2rem 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden; /* Para ocultar el camión fuera del contenedor */
-}
-
-/* Estilo para el ícono del camión */
-.envios-container .truck-container {
-    position: absolute;
-    left: -100px; 
-  top:25px;
-    font-size: 2rem;
-    color: #fff;
-    animation: moveTruck 10s linear infinite;
-}
-@keyframes moveTruck {
-    0% {
-        left: -130px;
-        transform: scaleX(1);
-        transform-origin: center center;
-    }
-    50% {
-        left: 150%;
-        transform: scaleX(1);
-        transform-origin: center center;
-    }
-    100% {
-        left: -100px;
-        transform: scaleX(1);
-        transform-origin: center center;
-    }
-}
-
-/* Estilo para el título */
-.envios-container h2 {
-    font-size: 1rem;
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin: 0;
-}
-
-
-
-
-
-
-.whatsapp-icon {
-  position: fixed;
-  bottom: 25px;
-  left: 11px;
-  background-color: #13b54e;
-  padding: 16px;
-  border-radius: 80%;
-  font-size: 36px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  z-index: 999;
-  opacity: 0.9;
-    text-decoration: none;
-}
-
-.whatsapp-icon:hover {
-  transform: translateY(-5px) scale(1.1);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  background-color: #128C7E;
-  opacity: 1;
-}
-
-.whatsapp-icon i {
-  display: block;
-}
-
-.whatsapp-icon:active {
-  transform: scale(0.95);
-}
-
-
-
-
-
-.scroll-to-top {
-  position: fixed;
-  bottom: 105px;
-  left: 20px;
-  background-color: #161616;
-  color: white;
-  font-size: 22px;
-  padding: 15px;
-  border-radius: 100px;
-  border: none;
-  cursor: pointer;
-  z-index:998;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s ease;
-  animation: pulse 1s infinite;
-}
-
-.scroll-to-top:hover {
-  background-color: #555;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 1; 
-    
-    transform: scale(1.1);
-  }
 }
