@@ -35,23 +35,20 @@ header {
 }
 
 .logo-text {
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
     color: gold; 
     margin-left: 5px;
-    letter-spacing: 1.6px;
 }
 
 .mayo{
     
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
     color: white;
-    text-transform: uppercase;
     margin-left: 18px;
 }
 header .logo-text {
-    
     margin-left: 80px;
     font-family: 'Arial', sans-serif;
 }
