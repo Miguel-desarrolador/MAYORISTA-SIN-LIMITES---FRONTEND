@@ -45,6 +45,20 @@ header .logo-text {
     font-family: 'Arial', sans-serif;
 }
 
+
+.logo-text2 {
+    font-size: 15px;
+    font-weight: bold;
+    color: gold; 
+    margin-left: 75px;
+}
+.mayo{
+    
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    margin-left: 60px;
+}
 .logo-gorra {
   width: 100px;
   height: auto;
