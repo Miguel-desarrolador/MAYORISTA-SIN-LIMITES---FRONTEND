@@ -173,11 +173,3 @@
   cursor: not-allowed;
   border-color: #ccc;
 }
-
-/* Responsive: botones pequeños en pantallas chicas */
-@media (max-width: 480px) {
-  .paginacion-btn {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-}
