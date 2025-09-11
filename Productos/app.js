@@ -116,6 +116,8 @@ function renderizarProductos(listaProductos) {
     btn.style.display = accesoEmpleado ? "inline-block" : "none";
   });
 
+  // 🔹 Actualizar stock visual de los productos renderizados
+  actualizarStockVisual();
   // Inicializar AOS en los nuevos elementos
   AOS.refresh();
 }
@@ -283,7 +285,7 @@ function asignarEventosProductos(productos) {
 
           mostrarAlerta("Stock actualizado correctamente!", "success");
           actualizarStockVisual();
-
+            
         } catch (error) {
           console.error(error);
           mostrarAlerta("No se pudo actualizar el stock.", "error");
@@ -292,7 +294,7 @@ function asignarEventosProductos(productos) {
     });
 
     // Eliminar producto
-    productoDiv.querySelector(".btn-eliminar-producto").addEventListener("click", async (e) => {
+    productoDiv.querySelector(" .btn-eliminar-producto").addEventListener("click", async (e) => {
       e.preventDefault();
       modalConfirmacion(`¿Deseas eliminar "${p.nombre}" de la base de datos?`, async (respuesta) => {
         if (!respuesta) return;
@@ -513,7 +515,8 @@ finalizarCompraBtn.addEventListener("click", async () => {
     });
 
     if (sinStock.length > 0) {
-     mostrarAlerta(`Productos sin stock suficiente: ${sinStock.map(p => p.nombre).join(", ")}, "error");`);
+     mostrarAlerta(`Productos sin stock suficiente: ${sinStock.map(p => p.nombre).join(", ")}`, "error");
+
       carrito = carrito.filter(item => !sinStock.includes(item));
       guardarCarrito();
       return;
@@ -746,7 +749,7 @@ const contenedorPaginacion = document.getElementById("paginacion");
 let paginador = new Paginacion({
   data: productosDB,
   container: contenedorPaginacion,
-  itemsPorPagina: 8,
+  itemsPorPagina: 12,
   onPageChange: (productosPagina) => {
     renderizarProductos(productosPagina);
   }
@@ -844,6 +847,7 @@ function mostrarModalStock(mensaje, valorInicial = "", callback) {
     if (e.key === "Escape") cancelarHandler();
   };
 }
+
 
 
 // Inicializar

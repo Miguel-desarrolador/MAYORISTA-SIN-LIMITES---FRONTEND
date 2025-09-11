@@ -2,7 +2,7 @@
 // PAGINACIÓN MODULAR MEJORADA
 // ==========================
 export class Paginacion {
-  constructor({ data = [], container, itemsPorPagina = 6, maxButtons = 5, onPageChange }) {
+  constructor({ data = [], container, itemsPorPagina = 6, maxButtons = 3, onPageChange }) {
     this.data = data;
     this.container = container;
     this.itemsPorPagina = itemsPorPagina;
