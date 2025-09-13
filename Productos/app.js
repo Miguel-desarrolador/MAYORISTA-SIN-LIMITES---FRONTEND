@@ -86,14 +86,11 @@ async function cargarProductos() {
     console.error("Error cargando productos:", error);
   }
 }
-
-
 // Renderizar productos con nuevo primero
 function renderizarProductos(listaProductos) {
   productosContainer.innerHTML = listaProductos.map((p, index) => `
-    <div class="producto" data-id="${p.id}" data-aos="fade-right" >
-      <img src="https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}
-" alt="${p.nombre}">
+    <div class="producto" data-id="${p.id}" data-aos="fade-right">
+      <img src="https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
       <p class="precio">Precio: $${p.precio}</p>
       <p class="stock">Stock: ${p.stock}</p>
@@ -105,6 +102,8 @@ function renderizarProductos(listaProductos) {
       <button class="btn-agregar">Agregar a carrito</button>
       <button class="btn-eliminar-producto btn-especial" type="button">Eliminar Producto</button>
       <button class="btn-editar-stock btn-especial" type="button">Editar Stock</button>
+      <button class="btn-editar-precio btn-especial" type="button">Editar Precio</button>
+      <button class="btn-editar-imagen btn-especial" type="button">Editar Imagen</button>
     </div>
   `).join("");
 
@@ -246,9 +245,6 @@ formAgregarProducto.addEventListener("submit", async (e) => {
 });
 
 
-
-
-
 // =======================
 // Asignar eventos a productos
 // =======================
@@ -262,10 +258,10 @@ function asignarEventosProductos(productos) {
     productoDiv.querySelector(".btn-mas").addEventListener("click", () => agregarAlCarrito(p.id));
     productoDiv.querySelector(".btn-menos").addEventListener("click", () => decrementarCantidad(p.id));
 
-    // Editar stock con modalStock
+    // 🔹 Editar stock
     productoDiv.querySelector(".btn-editar-stock").addEventListener("click", async () => {
       mostrarModalStock(`Ingrese nuevo stock para "${p.nombre}":`, p.stock, async (nuevoStock) => {
-        if (nuevoStock === null) return; // Cancelado
+        if (nuevoStock === null) return;
         const stockNumber = parseInt(nuevoStock);
         if (isNaN(stockNumber) || stockNumber < 0) return;
 
@@ -277,7 +273,6 @@ function asignarEventosProductos(productos) {
           });
           if (!res.ok) throw new Error("Error al actualizar stock");
 
-          // Actualizar local
           p.stock = stockNumber;
           const itemCarrito = carrito.find(c => c.id === p.id);
           if (itemCarrito) itemCarrito.stock = stockNumber;
@@ -285,7 +280,6 @@ function asignarEventosProductos(productos) {
 
           mostrarAlerta("Stock actualizado correctamente!", "success");
           actualizarStockVisual();
-            
         } catch (error) {
           console.error(error);
           mostrarAlerta("No se pudo actualizar el stock.", "error");
@@ -293,8 +287,69 @@ function asignarEventosProductos(productos) {
       });
     });
 
-    // Eliminar producto
-    productoDiv.querySelector(" .btn-eliminar-producto").addEventListener("click", async (e) => {
+    // 🔹 Editar precio
+    productoDiv.querySelector(".btn-editar-precio").addEventListener("click", async () => {
+      mostrarModalStock(`Ingrese nuevo precio para "${p.nombre}":`, p.precio, async (nuevoPrecio) => {
+        if (nuevoPrecio === null) return;
+        const precioNumber = parseFloat(nuevoPrecio);
+        if (isNaN(precioNumber) || precioNumber < 0) return;
+
+        try {
+          const res = await fetch(`${API_URL}/${p.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ precio: precioNumber })
+          });
+          if (!res.ok) throw new Error("Error al actualizar precio");
+
+          p.precio = precioNumber;
+          renderizarProductos(productosDB); // Actualiza la vista
+          mostrarAlerta("Precio actualizado correctamente!", "success");
+        } catch (error) {
+          console.error(error);
+          mostrarAlerta("No se pudo actualizar el precio.", "error");
+        }
+      });
+    });
+// Editar imagen con file
+productoDiv.querySelector(".btn-editar-imagen").addEventListener("click", () => {
+  const inputFile = document.createElement("input");
+  inputFile.type = "file";
+  inputFile.accept = "image/*"; // solo imágenes
+
+  inputFile.addEventListener("change", async () => {
+    const archivo = inputFile.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append("imagen", archivo);
+
+    try {
+      const res = await fetch(`${API_URL}/${p.id}/imagen`, {
+        method: "PUT",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error("Error al subir la imagen");
+
+      const data = await res.json();
+      p.imagen = data.imagen;
+
+      renderizarProductos(productosDB); // actualizar vista
+      mostrarAlerta("Imagen actualizada correctamente!", "success");
+
+    } catch (error) {
+      console.error(error);
+      mostrarAlerta(error.message, "error");
+    }
+  });
+
+  inputFile.click();
+});
+
+
+    // 🔹 Eliminar producto
+    productoDiv.querySelector(".btn-eliminar-producto").addEventListener("click", async (e) => {
       e.preventDefault();
       modalConfirmacion(`¿Deseas eliminar "${p.nombre}" de la base de datos?`, async (respuesta) => {
         if (!respuesta) return;
@@ -309,17 +364,18 @@ function asignarEventosProductos(productos) {
           guardarCarrito();
 
           mostrarAlerta("Producto eliminado correctamente!", "success");
-
         } catch (error) {
           console.error(error);
           mostrarAlerta("No se pudo eliminar el producto.", "error");
         }
       });
     });
+
   });
 
   actualizarStockVisual();
 }
+
 
 // Carrito
 function guardarCarrito() {
@@ -670,22 +726,22 @@ function cerrarModalCodigo() {
   modalCodigo.classList.add("oculto");
   inputCodigoAcceso.value = "";
 }
-
 function mostrarBotonesEspeciales() {
-  document.querySelectorAll(".btn-editar-stock, .btn-eliminar-producto").forEach(btn => {
+  document.querySelectorAll(".btn-especial").forEach(btn => {
     btn.style.display = "inline-block";
   });
   btnAgregarProducto.style.display = "inline-block";
-  if(btnIrCompras) btnIrCompras.style.display = "inline-block"; // mostrar
+  if (btnIrCompras) btnIrCompras.style.display = "inline-block";
 }
 
 function ocultarBotonesEspeciales() {
-  document.querySelectorAll(".btn-editar-stock, .btn-eliminar-producto").forEach(btn => {
+  document.querySelectorAll(".btn-especial").forEach(btn => {
     btn.style.display = "none";
   });
   btnAgregarProducto.style.display = "none";
-  if(btnIrCompras) btnIrCompras.style.display = "none"; // ocultar
+  if (btnIrCompras) btnIrCompras.style.display = "none";
 }
+
 
 
 // ==========================
