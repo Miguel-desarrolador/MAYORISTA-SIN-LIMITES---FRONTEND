@@ -592,3 +592,112 @@ hr {
     transform: scale(1.1);
   }
 }
+/* Contenedor del modal */
+.modalNuevo {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* altura completa de la pantalla */
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+/* Contenido del modal */
+.modalContentNuevo {
+  background: #fff;
+  padding: 25px 20px;
+  border-radius: 12px;
+  width: 350px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: modalFade 0.3s ease;
+}
+
+/* Animación de aparición */
+@keyframes modalFade {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Botón de cerrar */
+.modalCloseNuevo {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.modalCloseNuevo:hover {
+  color: #000;
+}
+
+/* Inputs y selects */
+.modalContentNuevo input,
+.modalContentNuevo select {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modalContentNuevo input:focus,
+.modalContentNuevo select:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+/* Botones */
+.btnAceptarNuevo,
+.btnCancelarNuevo {
+  padding: 8px 16px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btnAceptarNuevo {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btnAceptarNuevo:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.btnCancelarNuevo {
+  background-color: #f44336;
+  color: white;
+}
+
+.btnCancelarNuevo:hover {
+  background-color: #e53935;
+  transform: scale(1.05);
+}
+
+/* Contenedor de botones */
+.modalContentNuevo div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+}

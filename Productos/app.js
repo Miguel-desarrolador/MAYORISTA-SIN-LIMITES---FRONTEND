@@ -103,7 +103,9 @@ function renderizarProductos(listaProductos) {
       <button class="btn-eliminar-producto btn-especial" type="button">Eliminar Producto</button>
       <button class="btn-editar-stock btn-especial" type="button">Editar Stock</button>
       <button class="btn-editar-precio btn-especial" type="button">Editar Precio</button>
-      <button class="btn-editar-imagen btn-especial" type="button">Editar Imagen</button>
+      <button class="btn-editar-imagen btn-especial" type="button">Editar Imagen</button><button class="btn-editar-nombre btn-especial" type="button">Editar Nombre</button>
+<button class="btn-editar-categoria btn-especial" type="button">Editar Categoría</button>
+
     </div>
   `).join("");
 
@@ -263,6 +265,66 @@ function asignarEventosProductos(productos) {
     const btnMenos = productoDiv.querySelector(".btn-menos");
     if (btnMenos) btnMenos.addEventListener("click", () => decrementarCantidad(p.id));
 
+// Editar Nombre
+const btnEditarNombre = productoDiv.querySelector(".btn-editar-nombre");
+if (btnEditarNombre) {
+  btnEditarNombre.addEventListener("click", () => {
+    mostrarModalNombre(p.nombre, async (nuevoNombre) => {
+      if (!nuevoNombre) return;
+
+      try {
+        const res = await fetch(`${API_URL}/${p.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nombre: nuevoNombre })
+        });
+        if (!res.ok) throw new Error("Error al actualizar nombre");
+
+        // Actualizar en la variable y en el DOM
+        p.nombre = nuevoNombre;
+        const titulo = productoDiv.querySelector("h3");
+        if (titulo) titulo.textContent = nuevoNombre;
+
+        mostrarAlerta("Nombre actualizado correctamente!", "success");
+      } catch (err) {
+        console.error(err);
+        mostrarAlerta("No se pudo actualizar el nombre.", "error");
+      }
+    });
+  });
+}
+
+// Editar Categoría
+const btnEditarCategoria = productoDiv.querySelector(".btn-editar-categoria");
+if (btnEditarCategoria) {
+  btnEditarCategoria.addEventListener("click", () => {
+    mostrarModalCategoria(p.categoria, async (nuevaCategoria) => {
+      if (!nuevaCategoria) return;
+
+      try {
+        const res = await fetch(`${API_URL}/${p.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ categoria: nuevaCategoria })
+        });
+        if (!res.ok) throw new Error("Error al actualizar categoría");
+
+        // Actualizar en la variable
+        p.categoria = nuevaCategoria;
+
+        mostrarAlerta("Categoría actualizada correctamente!", "success");
+
+        // Actualizar filtros y selects si tienes funciones que lo hagan
+        if (typeof cargarCategorias === "function") cargarCategorias();
+        if (typeof cargarCategoriasModal === "function") cargarCategoriasModal();
+      } catch (err) {
+        console.error(err);
+        mostrarAlerta("No se pudo actualizar la categoría.", "error");
+      }
+    });
+  });
+}
+
     // Editar stock
     const btnEditarStock = productoDiv.querySelector(".btn-editar-stock");
     if (btnEditarStock) btnEditarStock.addEventListener("click", async () => {
@@ -319,39 +381,45 @@ function asignarEventosProductos(productos) {
         }
       });
     });
+// Editar imagen
+const btnEditarImagen = productoDiv.querySelector(".btn-editar-imagen");
+if (btnEditarImagen) btnEditarImagen.addEventListener("click", () => {
+  const inputFile = document.createElement("input");
+  inputFile.type = "file";
+  inputFile.accept = "image/*";
 
-    // Editar imagen
-    const btnEditarImagen = productoDiv.querySelector(".btn-editar-imagen");
-    if (btnEditarImagen) btnEditarImagen.addEventListener("click", () => {
-      const inputFile = document.createElement("input");
-      inputFile.type = "file";
-      inputFile.accept = "image/*";
+  inputFile.addEventListener("change", async () => {
+    const archivo = inputFile.files[0];
+    if (!archivo) return;
 
-      inputFile.addEventListener("change", async () => {
-        const archivo = inputFile.files[0];
-        if (!archivo) return;
+    // Actualizar imagen instantáneamente en el frontend
+    const imgElemento = productoDiv.querySelector("img");
+    if (imgElemento) imgElemento.src = URL.createObjectURL(archivo);
 
-        const formData = new FormData();
-        formData.append("imagen", archivo);
+    // Subir al servidor
+    const formData = new FormData();
+    formData.append("imagen", archivo);
 
-        try {
-          const res = await fetch(`${API_URL}/${p.id}/imagen`, { method: "PUT", body: formData });
-          if (!res.ok) throw new Error("Error al subir la imagen");
+    try {
+      const res = await fetch(`${API_URL}/${p.id}/imagen`, { method: "PUT", body: formData });
+      if (!res.ok) throw new Error("Error al subir la imagen");
 
-          const data = await res.json();
-          p.imagen = data.imagen;
+      const data = await res.json();
+      p.imagen = data.imagen;
 
-          const imgElemento = productoDiv.querySelector("img");
-          if (imgElemento) imgElemento.src = `https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}`;
-          mostrarAlerta("Imagen actualizada correctamente!", "success");
-        } catch (error) {
-          console.error(error);
-          mostrarAlerta(error.message, "error");
-        }
-      });
+      // Asegurarse de actualizar con la URL final del servidor
+      if (imgElemento) imgElemento.src = `https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}`;
 
-      inputFile.click();
-    });
+      mostrarAlerta("Imagen actualizada correctamente!", "success");
+    } catch (error) {
+      console.error(error);
+      mostrarAlerta(error.message, "error");
+    }
+  });
+
+  inputFile.click();
+});
+
 
     // Eliminar producto
     const btnEliminar = productoDiv.querySelector(".btn-eliminar-producto");
@@ -380,6 +448,96 @@ function asignarEventosProductos(productos) {
   });
 
   actualizarStockVisual();
+}
+
+// Modal Nombre
+const modalNombre = document.getElementById("modalNombre");
+const inputNombreModal = document.getElementById("inputNombreModal");
+const btnAceptarNombre = document.getElementById("btnAceptarNombre");
+const btnCancelarNombre = document.getElementById("btnCancelarNombre");
+const cerrarModalNombreBtn = document.getElementById("cerrarModalNombre");
+
+function mostrarModalNombre(nombreActual, callback) {
+  inputNombreModal.value = nombreActual;
+  modalNombre.style.display = "flex";
+  inputNombreModal.focus();
+
+  const aceptar = () => {
+    cerrarModal();
+    callback(inputNombreModal.value.trim());
+  };
+  const cancelar = () => {
+    cerrarModal();
+    callback(null);
+  };
+  const cerrarModal = () => {
+    modalNombre.style.display = "none";
+    btnAceptarNombre.removeEventListener("click", aceptar);
+    btnCancelarNombre.removeEventListener("click", cancelar);
+    cerrarModalNombreBtn.removeEventListener("click", cancelar);
+    inputNombreModal.onkeydown = null;
+  };
+
+  btnAceptarNombre.addEventListener("click", aceptar);
+  btnCancelarNombre.addEventListener("click", cancelar);
+  cerrarModalNombreBtn.addEventListener("click", cancelar);
+
+  inputNombreModal.onkeydown = (e) => {
+    if (e.key === "Enter") aceptar();
+    if (e.key === "Escape") cancelar();
+  };
+}
+
+// Modal Categoría
+const modalCategoria = document.getElementById("modalCategoria");
+const selectCategoriaModal = document.getElementById("selectCategoriaModal");
+const inputNuevaCategoriaModal = document.getElementById("inputNuevaCategoriaModal");
+const btnAceptarCategoria = document.getElementById("btnAceptarCategoria");
+const btnCancelarCategoria = document.getElementById("btnCancelarCategoria");
+const cerrarModalCategoriaBtn = document.getElementById("cerrarModalCategoria");
+
+function mostrarModalCategoria(categoriaActual, callback) {
+  // Cargar categorías existentes
+  const categorias = [...new Set(productosDB.map(p => p.categoria))];
+  selectCategoriaModal.innerHTML = categorias.map(c => `<option value="${c}">${c}</option>`).join("");
+  selectCategoriaModal.insertAdjacentHTML("afterbegin", `<option value="">Seleccionar categoría</option>`);
+
+  selectCategoriaModal.value = categoriaActual || "";
+  inputNuevaCategoriaModal.value = "";
+  modalCategoria.style.display = "flex";
+  selectCategoriaModal.focus();
+
+  const aceptar = () => {
+    cerrarModal();
+    const nuevaCat = inputNuevaCategoriaModal.value.trim();
+    callback(nuevaCat || selectCategoriaModal.value);
+  };
+  const cancelar = () => {
+    cerrarModal();
+    callback(null);
+  };
+  const cerrarModal = () => {
+    modalCategoria.style.display = "none";
+    btnAceptarCategoria.removeEventListener("click", aceptar);
+    btnCancelarCategoria.removeEventListener("click", cancelar);
+    cerrarModalCategoriaBtn.removeEventListener("click", cancelar);
+    inputNuevaCategoriaModal.onkeydown = null;
+    selectCategoriaModal.onkeydown = null;
+  };
+
+  btnAceptarCategoria.addEventListener("click", aceptar);
+  btnCancelarCategoria.addEventListener("click", cancelar);
+  cerrarModalCategoriaBtn.addEventListener("click", cancelar);
+
+  // Enter y Escape
+  inputNuevaCategoriaModal.onkeydown = (e) => {
+    if (e.key === "Enter") aceptar();
+    if (e.key === "Escape") cancelar();
+  };
+  selectCategoriaModal.onkeydown = (e) => {
+    if (e.key === "Enter") aceptar();
+    if (e.key === "Escape") cancelar();
+  };
 }
 
 
