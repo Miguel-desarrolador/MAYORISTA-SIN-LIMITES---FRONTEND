@@ -224,10 +224,11 @@ formAgregarProducto.addEventListener("submit", async (e) => {
     if (!res.ok) throw new Error("Error al agregar producto");
     const nuevoProducto = await res.json();
 
-    // Agregar el producto al inicio del array para que se vea primero
-    productosDB.unshift(nuevoProducto); 
+    // Agregar al array
+    productosDB.unshift(nuevoProducto);
+
+    // Renderizar solo el producto nuevo en el DOM
     renderizarProductos(productosDB);
-    cargarCategorias();
 
     // Mantener acceso empleado activo si corresponde
     if (accesoEmpleado) mostrarBotonesEspeciales();
@@ -237,13 +238,12 @@ formAgregarProducto.addEventListener("submit", async (e) => {
     formAgregarProducto.reset();
     previewImagen.style.display = "none";
     mostrarAlerta("Producto agregado correctamente!", "success");
+
   } catch (err) {
     console.error(err);
     mostrarAlerta("No se pudo agregar el producto. Intenta de nuevo.", "error");
-
   }
 });
-
 
 // =======================
 // Asignar eventos a productos
@@ -254,12 +254,18 @@ function asignarEventosProductos(productos) {
     if (!productoDiv) return;
 
     // Agregar / sumar / restar
-    productoDiv.querySelector(".btn-agregar").addEventListener("click", () => agregarAlCarrito(p.id));
-    productoDiv.querySelector(".btn-mas").addEventListener("click", () => agregarAlCarrito(p.id));
-    productoDiv.querySelector(".btn-menos").addEventListener("click", () => decrementarCantidad(p.id));
+    const btnAgregar = productoDiv.querySelector(".btn-agregar");
+    if (btnAgregar) btnAgregar.addEventListener("click", () => agregarAlCarrito(p.id));
 
-    // 🔹 Editar stock
-    productoDiv.querySelector(".btn-editar-stock").addEventListener("click", async () => {
+    const btnMas = productoDiv.querySelector(".btn-mas");
+    if (btnMas) btnMas.addEventListener("click", () => agregarAlCarrito(p.id));
+
+    const btnMenos = productoDiv.querySelector(".btn-menos");
+    if (btnMenos) btnMenos.addEventListener("click", () => decrementarCantidad(p.id));
+
+    // Editar stock
+    const btnEditarStock = productoDiv.querySelector(".btn-editar-stock");
+    if (btnEditarStock) btnEditarStock.addEventListener("click", async () => {
       mostrarModalStock(`Ingrese nuevo stock para "${p.nombre}":`, p.stock, async (nuevoStock) => {
         if (nuevoStock === null) return;
         const stockNumber = parseInt(nuevoStock);
@@ -287,8 +293,9 @@ function asignarEventosProductos(productos) {
       });
     });
 
-    // 🔹 Editar precio
-    productoDiv.querySelector(".btn-editar-precio").addEventListener("click", async () => {
+    // Editar precio
+    const btnEditarPrecio = productoDiv.querySelector(".btn-editar-precio");
+    if (btnEditarPrecio) btnEditarPrecio.addEventListener("click", async () => {
       mostrarModalStock(`Ingrese nuevo precio para "${p.nombre}":`, p.precio, async (nuevoPrecio) => {
         if (nuevoPrecio === null) return;
         const precioNumber = parseFloat(nuevoPrecio);
@@ -303,7 +310,8 @@ function asignarEventosProductos(productos) {
           if (!res.ok) throw new Error("Error al actualizar precio");
 
           p.precio = precioNumber;
-          renderizarProductos(productosDB); // Actualiza la vista
+          const precioElemento = productoDiv.querySelector(".precio");
+          if (precioElemento) precioElemento.textContent = `Precio: $${precioNumber}`;
           mostrarAlerta("Precio actualizado correctamente!", "success");
         } catch (error) {
           console.error(error);
@@ -311,45 +319,43 @@ function asignarEventosProductos(productos) {
         }
       });
     });
-// Editar imagen con file
-productoDiv.querySelector(".btn-editar-imagen").addEventListener("click", () => {
-  const inputFile = document.createElement("input");
-  inputFile.type = "file";
-  inputFile.accept = "image/*"; // solo imágenes
 
-  inputFile.addEventListener("change", async () => {
-    const archivo = inputFile.files[0];
-    if (!archivo) return;
+    // Editar imagen
+    const btnEditarImagen = productoDiv.querySelector(".btn-editar-imagen");
+    if (btnEditarImagen) btnEditarImagen.addEventListener("click", () => {
+      const inputFile = document.createElement("input");
+      inputFile.type = "file";
+      inputFile.accept = "image/*";
 
-    const formData = new FormData();
-    formData.append("imagen", archivo);
+      inputFile.addEventListener("change", async () => {
+        const archivo = inputFile.files[0];
+        if (!archivo) return;
 
-    try {
-      const res = await fetch(`${API_URL}/${p.id}/imagen`, {
-        method: "PUT",
-        body: formData
+        const formData = new FormData();
+        formData.append("imagen", archivo);
+
+        try {
+          const res = await fetch(`${API_URL}/${p.id}/imagen`, { method: "PUT", body: formData });
+          if (!res.ok) throw new Error("Error al subir la imagen");
+
+          const data = await res.json();
+          p.imagen = data.imagen;
+
+          const imgElemento = productoDiv.querySelector("img");
+          if (imgElemento) imgElemento.src = `https://mayorista-sin-limites-backend-production.up.railway.app/img/productos/${p.imagen}`;
+          mostrarAlerta("Imagen actualizada correctamente!", "success");
+        } catch (error) {
+          console.error(error);
+          mostrarAlerta(error.message, "error");
+        }
       });
 
-      if (!res.ok) throw new Error("Error al subir la imagen");
+      inputFile.click();
+    });
 
-      const data = await res.json();
-      p.imagen = data.imagen;
-
-      renderizarProductos(productosDB); // actualizar vista
-      mostrarAlerta("Imagen actualizada correctamente!", "success");
-
-    } catch (error) {
-      console.error(error);
-      mostrarAlerta(error.message, "error");
-    }
-  });
-
-  inputFile.click();
-});
-
-
-    // 🔹 Eliminar producto
-    productoDiv.querySelector(".btn-eliminar-producto").addEventListener("click", async (e) => {
+    // Eliminar producto
+    const btnEliminar = productoDiv.querySelector(".btn-eliminar-producto");
+    if (btnEliminar) btnEliminar.addEventListener("click", async (e) => {
       e.preventDefault();
       modalConfirmacion(`¿Deseas eliminar "${p.nombre}" de la base de datos?`, async (respuesta) => {
         if (!respuesta) return;
